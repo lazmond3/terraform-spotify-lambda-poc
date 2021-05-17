@@ -9,9 +9,10 @@
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     id("org.jetbrains.kotlin.jvm") version "1.4.31"
+    id("com.github.johnrengelman.shadow") version "7.0.0"
 
     // Apply the application plugin to add support for building a CLI application in Java.
-    application
+//    application
 }
 
 repositories {
@@ -34,9 +35,35 @@ dependencies {
 
     // Use the Kotlin JUnit integration.
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit")
+
+    implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
+    implementation("com.amazonaws:aws-lambda-java-events:3.1.0")
+    runtimeOnly("com.amazonaws:aws-lambda-java-log4j2:1.2.0")
 }
 
-application {
-    // Define the main class for the application.
-    mainClass.set("terraform.spotify.lambda.poc.AppKt")
+//application {
+//    // Define the main class for the application.
+//    mainClass.set("terraform.spotify.lambda.poc.AppKt")
+//}
+
+tasks {
+//    register<Zip> ("buildZip2") {
+//        println("hello world")
+//        println("hello world")
+//        from(compileKotlin)
+//        from(processResources)
+//        into("bbbbbbbbbbb") {
+//            from(configurations.runtime)
+//        }
+//    }
+//    create<Zip> ("buildZip") {
+//        from(compileKotlin)
+//        from(processResources)
+//        into("bbbbbbbbbbb") {
+//            from(configurations.runtime)
+//        }
+//    }
+    named("build") {
+        dependsOn("shadowJar")
+    }
 }
