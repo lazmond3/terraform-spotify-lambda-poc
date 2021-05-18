@@ -2,17 +2,19 @@ package terraform.spotify.lambda.poc.handler
 
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
-import com.amazonaws.services.dynamodbv2.model.AttributeValue
-import com.amazonaws.services.dynamodbv2.model.GetItemRequest
-import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException
+import com.amazonaws.services.dynamodbv2.model.*
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import terraform.spotify.lambda.poc.client.SpotifyApiClient
+import terraform.spotify.lambda.poc.entity.Token
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import java.time.LocalDateTime
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.system.exitProcess
 
@@ -46,18 +48,22 @@ class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
         logger.log("--- end read")
 
         logger.log("--- start -refreshToken read")
-        refreshToken(refreshToken, logger)
+        val refreshTokenValue = refreshToken(refreshToken, logger)
         logger.log("--- end -refreshToken read")
+
+        logger.log("--- start -dynamoUpdate read")
+        dynamoUpdate(refreshTokenValue, logger)
+        logger.log("--- end -dynamoUpdate read")
         return 1
     }
 
-    fun refreshToken(refreshToken: String, logger: LambdaLogger) {
+    fun refreshToken(refreshToken: String, logger: LambdaLogger): Token {
         val bear = "${variables.spotifyClientId}:${variables.spotifyClientSecret}"
         val base64ed = Base64.getEncoder().encodeToString(bear.toByteArray())
         logger.log("base64: $base64ed")
         logger.log("refreshToken: $refreshToken")
 
-        val result = spotifyService.refreshToken(
+        spotifyService.refreshToken(
             authorizationString = "Basic $base64ed",
             grantType = "refresh_token",
             refreshToken = refreshToken,
@@ -70,10 +76,56 @@ class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
                 logger.log("request response...token: ${body.accessToken}")
                 logger.log("request response...expires: ${body.expiresIn}")
                 logger.log("request response...scope: ${body.scope}")
+                return Token(
+                    accessToken = body.accessToken,
+                    expiresIn = body.expiresIn
+                )
             } else {
                 logger.log("error: ${it.errorBody().toString()}")
+                throw SystemException("error: ${it.errorBody().toString()}")
             }
         }
+    }
+
+    fun dynamoUpdate(token: Token, logger: LambdaLogger) {
+        val tableName = "spotify-poc"
+        val jpCal: Calendar = Calendar.getInstance()
+        val now = LocalDateTime.ofInstant(
+            jpCal.toInstant(), ZoneId.of("Asia/Tokyo")
+        )
+
+        val timeString = now.format(DateTimeFormatter.ISO_DATE_TIME)
+        logger.log("now: $now $timeString")
+
+        ddb.updateItem(
+            UpdateItemRequest()
+                .withTableName(tableName)
+                .withKey(
+                    mapOf(
+                        "UserId" to AttributeValue()
+                            .withS("moikilo00")
+                    )
+                )
+                .withAttributeUpdates(
+                    mapOf(
+                        "AccessToken" to AttributeValueUpdate()
+                            .withValue(
+                                AttributeValue()
+                                    .withS(token.accessToken)
+                            ),
+                        "ExpiresIn" to AttributeValueUpdate()
+                            .withValue(
+                                AttributeValue()
+                                    .withN("${token.expiresIn}")
+                            ),
+                        "UpdatedAt" to AttributeValueUpdate()
+                            .withValue(
+                                AttributeValue()
+                                    .withS(timeString)
+                            )
+                    )
+                )
+        )
     }
 
     fun dynamoRead(logger: LambdaLogger): String {
