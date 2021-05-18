@@ -39,6 +39,11 @@ dependencies {
     implementation("com.amazonaws:aws-lambda-java-core:1.2.1")
     implementation("com.amazonaws:aws-lambda-java-events:3.1.0")
     runtimeOnly("com.amazonaws:aws-lambda-java-log4j2:1.2.0")
+
+    // bom
+    implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1020"))
+    implementation("com.amazonaws:aws-java-sdk-dynamodb")
+
 }
 
 //application {
