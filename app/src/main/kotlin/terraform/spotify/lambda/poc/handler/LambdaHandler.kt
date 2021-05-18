@@ -8,13 +8,26 @@ import com.amazonaws.services.dynamodbv2.model.ResourceNotFoundException
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.amazonaws.services.lambda.runtime.RequestHandler
+import retrofit2.Retrofit
+import retrofit2.converter.jackson.JacksonConverterFactory
+import terraform.spotify.lambda.poc.client.SpotifyApiClient
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import java.util.*
 import kotlin.system.exitProcess
 
 
 class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
     val variables = EnvironmentVariables()
+    val baseUrl = "https://accounts.spotify.com"
+//    val objectMapper =
+    val retrofit = Retrofit.Builder()
+        .baseUrl(baseUrl)
+        .addConverterFactory(JacksonConverterFactory.create())
+        .build()
+
+    val spotifyService = retrofit.create(SpotifyApiClient::class.java)
+
 
     override fun handleRequest(input: Map<String, Any>, context: Context): Any {
         val logger = context.logger
@@ -32,7 +45,17 @@ class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
         return 1
     }
 
-    fun refreshToken(logger: LambdaLogger) {
+    fun refreshToken(refreshToken: String, logger: LambdaLogger) {
+        val bear = "${variables.spotifyClientId}:${variables.spotifyClientSecret}"
+        val base64ed = Base64.getEncoder().encode(bear.toByteArray()).toString()
+        logger.log("base64: $base64ed")
+        val result = spotifyService.refreshToken(
+            authorizationString = "Basic $base64ed",
+            grantType = "refresh_token",
+            refreshToken = refreshToken,
+            clientId = variables.spotifyClientId
+        )
+
 
     }
 
