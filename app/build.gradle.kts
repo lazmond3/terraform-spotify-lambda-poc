@@ -28,7 +28,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     // This dependency is used by the application.
-    implementation("com.google.guava:guava:30.0-jre")
+//    implementation("com.google.guava:guava:30.0-jre")
 
     // Use the Kotlin test library.
     testImplementation("org.jetbrains.kotlin:kotlin-test")
@@ -43,6 +43,10 @@ dependencies {
     // bom
     implementation(platform("com.amazonaws:aws-java-sdk-bom:1.11.1020"))
     implementation("com.amazonaws:aws-java-sdk-dynamodb")
+
+    // retrofit
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+
 
 }
 
