@@ -11,6 +11,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import terraform.spotify.lambda.poc.client.SpotifyApiClient
+import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 import java.util.*
 import kotlin.system.exitProcess
@@ -20,7 +21,8 @@ class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
     val variables = EnvironmentVariables()
     val baseUrl = "https://accounts.spotify.com"
-//    val objectMapper =
+
+    //    val objectMapper =
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(JacksonConverterFactory.create())
@@ -40,26 +42,41 @@ class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
         logger.log("--- end put item")
 
         logger.log("--- start read")
-        dynamoRead(logger)
+        val refreshToken = dynamoRead(logger)
         logger.log("--- end read")
+
+        logger.log("--- start -refreshToken read")
+        refreshToken(refreshToken, logger)
+        logger.log("--- end -refreshToken read")
         return 1
     }
 
     fun refreshToken(refreshToken: String, logger: LambdaLogger) {
         val bear = "${variables.spotifyClientId}:${variables.spotifyClientSecret}"
-        val base64ed = Base64.getEncoder().encode(bear.toByteArray()).toString()
+        val base64ed = Base64.getEncoder().encodeToString(bear.toByteArray())
         logger.log("base64: $base64ed")
+        logger.log("refreshToken: $refreshToken")
+
         val result = spotifyService.refreshToken(
             authorizationString = "Basic $base64ed",
             grantType = "refresh_token",
             refreshToken = refreshToken,
             clientId = variables.spotifyClientId
-        )
-
-
+        ).execute().let {
+            logger.log("request response...isSuccessful: ${it.isSuccessful}")
+            logger.log("request response...code: ${it.code()}")
+            val body = it.body()
+            if (it.isSuccessful && body != null) {
+                logger.log("request response...token: ${body.accessToken}")
+                logger.log("request response...expires: ${body.expiresIn}")
+                logger.log("request response...scope: ${body.scope}")
+            } else {
+                logger.log("error: ${it.errorBody().toString()}")
+            }
+        }
     }
 
-    fun dynamoRead(logger: LambdaLogger) {
+    fun dynamoRead(logger: LambdaLogger): String {
 
         val tableName = "spotify-poc"
         try {
@@ -80,6 +97,8 @@ class LambdaHandler : RequestHandler<Map<String, Any>, Any> {
                 )
             }
             logger.log("-----------")
+            return result.item["RefreshToken"]?.s
+                ?: throw SystemException("RefreshToken is not in the got item")
         } catch (e: ResourceNotFoundException) {
             logger.log("Error: The table \"$tableName\" can't be found.\n");
             logger.log("Be sure that it exists and that you've typed its name correctly!");
