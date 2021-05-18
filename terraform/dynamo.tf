@@ -11,10 +11,10 @@ resource "aws_dynamodb_table" "spotify-poc" {
     type = "S"
   }
 
-  ttl {
-    attribute_name = "TimeToExist"
-    enabled        = false
-  }
+  # ttl {
+  #   attribute_name = "TimeToExist"
+  #   enabled        = false
+  # }
   tags = {
     Name        = "spotify-poc"
     Environment = "production"

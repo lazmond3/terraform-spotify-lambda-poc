@@ -17,3 +17,15 @@ variable "api_path" {
 variable "api_env_stage_name" {
   default = "terraform-lambda-java-stage"
 }
+variable "spotify_refresh_token" {
+  type = string
+  sensitive = true
+}
+variable "spotify_client_id" {
+  type = string
+  sensitive = true
+}
+variable "spotify_client_secret" {
+  type = string
+  sensitive = true
+}
