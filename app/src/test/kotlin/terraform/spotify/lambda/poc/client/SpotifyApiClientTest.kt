@@ -1,4 +1,4 @@
-package terraform.spotify.lambda.poc.handler
+package terraform.spotify.lambda.poc.client
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import okhttp3.OkHttpClient
@@ -8,10 +8,8 @@ import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
-import terraform.spotify.lambda.poc.client.SpotifyApiClient
 
-
-internal class LambdaHandlerTest {
+class SpotifyApiClientTest {
     private lateinit var mockWebServer: MockWebServer
     private lateinit var objectMapper: ObjectMapper
     private lateinit var spotifyApiClient: SpotifyApiClient
