@@ -1,21 +1,19 @@
-package terraform.spotify.lambda.poc.service.dynamo
+package terraform.spotify.lambda.poc.mapper.dynamo
 
 import com.amazonaws.AmazonServiceException
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClient
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.*
 import com.amazonaws.services.lambda.runtime.LambdaLogger
-import terraform.spotify.lambda.poc.entity.Token
 import terraform.spotify.lambda.poc.entity.UserToken
-import terraform.spotify.lambda.poc.exception.SystemException
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.system.exitProcess
 
-class UserTokenDynamoDbService(
+class UserTokenDynamoDbMapper(
     val tableName: String,
-    val dbClient: AmazonDynamoDBClient,
+    val dbClient: AmazonDynamoDB,
 
     ) {
     // もし エントリがなかったら -> エラー？
@@ -37,7 +35,7 @@ class UserTokenDynamoDbService(
         val userToken = UserToken(
             userId = userId,
             accessToken = newAccessToken,
-            expiresIn = expiresIn,
+            expiresAt = expiresIn,
         )
         update(userToken)
     }
@@ -61,8 +59,8 @@ class UserTokenDynamoDbService(
                         if (it.refreshToken != null) {
                             map.put("RefreshToken", withSAttributeUpdateValue(it.refreshToken))
                         }
-                        if (it.expiresIn != null) {
-                            map.put("ExpiresIn", withNAttributeUpdateValue(it.expiresIn.toString()))
+                        if (it.expiresAt != null) {
+                            map.put("ExpiresAt", withNAttributeUpdateValue(it.expiresAt.toString()))
                         }
                         if (it.updatedAt != null) {
                             map.put("UpdatedAt", withSAttributeUpdateValue(it.updatedAt))
@@ -77,7 +75,7 @@ class UserTokenDynamoDbService(
     // 中間。読み出すときはこれを使う。
     // この結果がなかったらregister する必要があるし（でもエラーメッセージを返す)
     // この結果があっても、expiresIn がだめだったら更新処理をかける必要がある。
-    fun readRow(userId: String, logger: LambdaLogger): GetItemResult? {
+    private fun readRow(userId: String, logger: LambdaLogger): GetItemResult? {
         val result = dbClient.getItem(
             GetItemRequest()
                 .withTableName(tableName)
@@ -136,7 +134,7 @@ class UserTokenDynamoDbService(
         return timeString
     }
 
-    fun getUnixTime(): Long {
+    private fun getUnixTime(): Long {
         return System.currentTimeMillis() / 1000
     }
 
