@@ -44,19 +44,14 @@ jobs:
           # terraform_version: 0.13.0:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
 
-      - name: Terraform Format
-        id: fmt
-        run: terraform fmt -check -recursive
-        working-directory: ./terraform
-
       - name: Terraform Init
         id: init
         run: terraform init
 
-      - name: build python(copyするだけ)
-        run: |
-          cd ../
-          # ここで gradle をやる。ｌ これ run じゃないほうがいい
+      - name: Terraform Format
+        id: fmt
+        run: terraform fmt -check -recursive
+        working-directory: ./terraform
 
       - name: Terraform Plan
         id: plan
