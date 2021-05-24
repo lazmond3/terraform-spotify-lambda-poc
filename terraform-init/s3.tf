@@ -20,6 +20,6 @@ resource "aws_s3_bucket" "tfstate-bucket-spotify-lambda-poc" {
   }
 
   tags = {
-    Name        = "tfstate-bucket-spotify-lambda-poc/tfstate"
+    Name = "tfstate-bucket-spotify-lambda-poc/tfstate"
   }
 }
