@@ -34,7 +34,9 @@ jobs:
           distribution: 'adopt'
 
       - name: Build with Gradle
-        run: ./gradlew :app:build  
+        run: |
+          cd ../
+          ./gradlew :app:build  
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v1
