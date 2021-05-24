@@ -47,6 +47,8 @@ dependencies {
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
     implementation("com.squareup.okhttp3:mockwebserver:4.9.0")
 
+    // line bot
+    implementation("com.linecorp.bot:line-bot-api-client:4.3.0")
 
 }
 
@@ -86,3 +88,12 @@ tasks.test {
 //tasks.withType<Test> {
 //    useJUnitPlatform()
 //}
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = "11"
+        javaParameters = true
+        freeCompilerArgs = listOf(
+            "-Xjsr305=strict"
+        )
+    }
+}
