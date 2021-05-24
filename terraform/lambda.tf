@@ -14,7 +14,8 @@ resource "aws_lambda_function" "java_lambda_function" {
     variables = {
         SPOTIFY_REFRESH_TOKEN = var.spotify_refresh_token,
         SPOTIFY_CLIENT_ID = var.spotify_client_id,
-        SPOTIFY_CLIENT_SECRET = var.spotify_client_secret
+        SPOTIFY_CLIENT_SECRET = var.spotify_client_secret,
+        LINE_BOT_CHANNEL_ACCESS_TOKEN = var.line_bot_channel_access_token
       }
   }
 }

@@ -29,3 +29,7 @@ variable "spotify_client_secret" {
   type = string
   sensitive = true
 }
+variable "line_bot_channel_access_token" {
+  type = string
+  sensitive = true
+}
