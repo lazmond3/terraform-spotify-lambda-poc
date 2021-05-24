@@ -48,6 +48,9 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
         return if (input.path == "/callback") {
             lineBotHookController.handle(input, context)
         } else if (input.path == "/test") {
+            val headers = mapOf(
+                "Content-Type" to "text/html"
+            )
             APIGatewayProxyResponseEvent().apply {
                 isBase64Encoded = false
                 statusCode = 200

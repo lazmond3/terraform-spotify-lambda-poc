@@ -27,7 +27,7 @@ internal class LambdaHandlerTest {
     val channelToken =
         System.getenv("LINE_BOT_CHANNEL_ACCESS_TOKEN")
 
-    @Test
+//    @Test
     fun linebotTest() {
         // secret
         val client = LineMessagingClient.builder(channelToken).build();
@@ -41,6 +41,5 @@ internal class LambdaHandlerTest {
         ).get()
 
         println("hell world, result: $sentResult")
-
     }
 }
