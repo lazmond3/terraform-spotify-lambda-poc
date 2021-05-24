@@ -79,7 +79,6 @@ jobs:
       - name: Terraform Format
         id: fmt
         run: terraform fmt -check -recursive
-        working-directory: ./terraform
 
       - name: Terraform Init
         id: init
