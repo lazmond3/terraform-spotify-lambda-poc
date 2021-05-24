@@ -1,12 +1,13 @@
 package terraform.spotify.lambda.poc.entity
 
 import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
+import java.time.LocalDateTime
 
 @NoArgsConstructor
 data class UserToken(
-//    val userId: String,
-//    val refreshToken: String,
-    val accessToken: String,
-    val expiresIn: Int,
-//    val scope: String
+    val userId: String? = null,
+    val refreshToken: String? = null,
+    val accessToken: String? = null,
+    val expiresIn: Int? = null,
+    val updatedAt: String? = null,
 )
