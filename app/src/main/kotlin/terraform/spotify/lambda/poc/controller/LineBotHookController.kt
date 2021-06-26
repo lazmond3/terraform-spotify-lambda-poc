@@ -12,6 +12,8 @@ class LineBotHookController(val token: String) {
         val headers = mapOf(
             "Content-Type" to "text/html"
         )
+
+//        lineBotService.replyToMessage()
         return APIGatewayProxyResponseEvent().apply {
             isBase64Encoded = false
             statusCode = 200

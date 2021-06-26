@@ -1,51 +1,27 @@
 package terraform.spotify.lambda.poc.handler
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import com.fasterxml.jackson.databind.ObjectMapper
-import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
-import terraform.spotify.lambda.poc.client.SpotifyApiClient
-import terraform.spotify.lambda.poc.controller.LineBotHookController
-import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
-import terraform.spotify.lambda.poc.service.SpotifyService
-import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import terraform.spotify.lambda.poc.construction.ObjectConstructor
 
 
 class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-    val tableName = "spotify-poc"
-    val ddb = AmazonDynamoDBClientBuilder.defaultClient()
-    val variables = EnvironmentVariables()
-    val baseUrl = "https://accounts.spotify.com"
-    val objectMapper = ObjectMapper()
-    val lineBotHookController = LineBotHookController(variables.lineBotChannelAccessToken)
-    val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(JacksonConverterFactory.create())
-        .build()
-    val spotifyApiClient = retrofit.create(SpotifyApiClient::class.java)
-
-    val userTokenDynamoDBMapper = UserTokenDynamoDbMapper(
-        tableName = tableName,
-        dbClient = ddb
-    )
-    val spotifyService = SpotifyService(
-        spotifyApiClient = spotifyApiClient,
-        variables = variables,
-        userTokenDynamoDbMapper = userTokenDynamoDBMapper
-    )
+    val objectConstructor = ObjectConstructor()
+    val lineBotHookController = objectConstructor.lineBotHookController
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent {
         val logger = context.logger
 
         logger.log("------")
         logger.log("input: $input")
+        val inputBody = input.body
         logger.log("------")
+        logger.log("[debug] body: $inputBody")
 
         return if (input.path == "/callback") {
+            // LINE BOT のハンドラ
             lineBotHookController.handle(input, context)
         } else if (input.path == "/test") {
             val headers = mapOf(
