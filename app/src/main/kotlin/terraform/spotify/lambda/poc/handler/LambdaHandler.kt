@@ -13,12 +13,16 @@ import terraform.spotify.lambda.poc.controller.LineBotHookController
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.service.SpotifyService
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import javax.inject.Inject
 
 
 class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     val tableName = "spotify-poc"
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
-    val variables = EnvironmentVariables()
+
+    //    val variables = EnvironmentVariables()
+    @Inject
+    lateinit var variables: EnvironmentVariables
     val baseUrl = "https://accounts.spotify.com"
     val objectMapper = ObjectMapper()
     val lineBotHookController = LineBotHookController(variables.lineBotChannelAccessToken)

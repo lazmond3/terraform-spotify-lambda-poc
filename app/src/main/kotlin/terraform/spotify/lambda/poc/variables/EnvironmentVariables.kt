@@ -1,7 +1,9 @@
 package terraform.spotify.lambda.poc.variables
 
+import dagger.Module
 import terraform.spotify.lambda.poc.exception.SystemException
 
+@Module
 class EnvironmentVariables {
     val spotifyClientId = System.getenv("SPOTIFY_CLIENT_ID")
         ?: throw SystemException("SPOTIFY_CLIENT_ID is not set")
