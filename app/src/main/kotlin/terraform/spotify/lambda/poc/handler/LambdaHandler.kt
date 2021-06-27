@@ -5,6 +5,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
+import terraform.spotify.lambda.poc.entity.AwsInputEvent
 
 
 class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
@@ -13,12 +14,19 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent {
         val logger = context.logger
+        val objectMapper = objectConstructor.objectMapper
 
         logger.log("------")
         logger.log("input: $input")
         val inputBody = input.body
+        val inputObject = objectMapper.readValue(input.body, AwsInputEvent::class.java)
         logger.log("------")
         logger.log("[debug] body: $inputBody")
+        logger.log("[debug] events: ")
+        inputObject.events.forEach {
+            logger.log("\t[debug] $it")
+        }
+
 
         return if (input.path == "/callback") {
             // LINE BOT のハンドラ

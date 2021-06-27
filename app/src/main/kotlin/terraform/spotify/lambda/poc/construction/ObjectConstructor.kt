@@ -11,7 +11,7 @@ import terraform.spotify.lambda.poc.service.SpotifyService
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 
 class ObjectConstructor {
-//    val objectMapper = ObjectMapper()
+    val objectMapper = ObjectMapper()
     val tableName = "spotify-poc"
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
     val variables = EnvironmentVariables()
