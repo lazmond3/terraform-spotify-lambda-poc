@@ -14,7 +14,7 @@ class LineBotHookController(val token: String) {
         )
 
         inputEvent.events.forEach {
-            val message = "[received] ${it.message}"
+            val message = "[received] ${it.message.text}"
             lineBotService.replyToMessage(it.replyToken, message)
         }
         return APIGatewayProxyResponseEvent().apply {
