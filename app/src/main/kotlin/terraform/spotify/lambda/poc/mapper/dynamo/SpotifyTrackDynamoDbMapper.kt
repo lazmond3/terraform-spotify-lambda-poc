@@ -66,7 +66,7 @@ class SpotifyTrackDynamoDbMapper(
         val result = dbClient.query(
             QueryRequest()
                 .withTableName(tableName)
-                .withIndexName(gsiIndexName)
+//                .withIndexName(gsiIndexName)
                 .withKeyConditionExpression("PlaylistId = :playlistId and TrackId = :trackId")
                 .withExpressionAttributeValues(
                     mapOf(

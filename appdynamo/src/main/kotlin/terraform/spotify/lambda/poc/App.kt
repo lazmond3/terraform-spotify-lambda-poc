@@ -69,7 +69,7 @@ fun main() {
     val itemCollection = client.query(
         QueryRequest()
             .withTableName(tableName)
-            .withIndexName(indexName)
+//            .withIndexName(indexName)
             .withKeyConditionExpression("PlaylistId = :playlistId and TrackId = :trackId")
             .withExpressionAttributeValues(
                 mapOf(
