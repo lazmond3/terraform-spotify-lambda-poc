@@ -28,7 +28,13 @@ class LineBotHookController(
         val bodyValue = text.split(" ")[1]
         when (head) {
             "register-refresh" -> {
-
+                val userId = inputEvent.events[0].source.userId
+                objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
+                    userId = userId,
+                    refreshToken = bodyValue,
+                    logger = context.logger
+                )
+                lineBotService.replyToMessage(inputEvent.events[0].replyToken, "registered refresh token")
             }
             "register-playlist" -> {
                 val userId = inputEvent.events[0].source.userId
