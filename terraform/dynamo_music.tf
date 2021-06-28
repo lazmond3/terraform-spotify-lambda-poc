@@ -4,13 +4,8 @@ resource "aws_dynamodb_table" "spotify-dynamo-music" {
   billing_mode   = "PROVISIONED"
   read_capacity  = 1
   write_capacity = 1
-  hash_key       = "UserId"
-  range_key      = "PlaylistId"
-
-  attribute {
-    name = "UserId"
-    type = "S"
-  }
+  hash_key       = "PlaylistId"
+  range_key      = "TrackId"
 
   attribute {
     name = "PlaylistId"
@@ -22,15 +17,15 @@ resource "aws_dynamodb_table" "spotify-dynamo-music" {
     type = "S"
   }
 
-  global_secondary_index {
-    name               = "SpotifyDynamoMusicPlaylistIndex"
-    hash_key           = "PlaylistId"
-    range_key          = "TrackId"
-    write_capacity     = 1
-    read_capacity      = 1
-    projection_type    = "INCLUDE"
-    non_key_attributes = ["UserId"]
-  }
+  # global_secondary_index {
+  #   name               = "SpotifyDynamoMusicPlaylistIndex"
+  #   hash_key           = "PlaylistId"
+  #   range_key          = "TrackId"
+  #   write_capacity     = 1
+  #   read_capacity      = 1
+  #   projection_type    = "INCLUDE"
+  #   non_key_attributes = ["UserId"]
+  # }
 
 
   tags = {
