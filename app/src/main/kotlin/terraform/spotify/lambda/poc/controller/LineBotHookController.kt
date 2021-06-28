@@ -87,21 +87,16 @@ class LineBotHookController(
 
                 val result = spotifyDbMapper.readRowOrNull(playlistId, trackId, context.logger)
                 if (result != null) {
-                    replyToken.let {
-                        lineBotService.replyToMessage(
-                            it,
-                            "[delete] the track is already registered. \n${trackId}"
-                        )
-                    }
-                }
-                spotifyDbMapper.delete(userId, playlistId, trackId)
-                if (result != null) {
-                    replyToken.let {
-                        lineBotService.replyToMessage(
-                            it,
-                            "Delete success! $userId, $playlistId, $trackId"
-                        )
-                    }
+                    context.logger.log("[delete debug log] the track $trackId is already registered: ")
+//                    replyToken.let {
+//                        lineBotService.replyToMessage(
+//                            it,
+//                            "[delete] the track is already registered. \n${trackId}"
+//                        )
+//                    }
+                    spotifyDbMapper.delete(userId, playlistId, trackId)
+                } else {
+                    context.logger.log("[delete debug log] the track $trackId is not registered: ")
                 }
             }
         }

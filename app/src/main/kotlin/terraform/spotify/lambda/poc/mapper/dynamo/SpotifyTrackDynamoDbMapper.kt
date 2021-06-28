@@ -33,8 +33,6 @@ class SpotifyTrackDynamoDbMapper(
                 .withTableName(tableName)
                 .withKey(
                     mapOf(
-                        "UserId" to AttributeValue()
-                            .withS(userId),
                         "PlaylistId" to AttributeValue()
                             .withS(playlistId),
                         "TrackId" to AttributeValue()
@@ -84,19 +82,6 @@ class SpotifyTrackDynamoDbMapper(
             }
         }
     }
-//        dbClient.getItem(
-//            GetItemRequest()
-//                .withTableName(tableName)
-//                .withKey(
-//                    mapOf(
-//                        "UserId" to AttributeValue()
-//                            .withS(userId),
-//                        "PlaylistId" to AttributeValue()
-//                            .withS(playlistId)
-//                    )
-//                )
-//
-//        )
 
 
     // 検証 or LIFF で登録するエンドポイント
