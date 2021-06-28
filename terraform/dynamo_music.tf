@@ -60,7 +60,7 @@ resource "aws_iam_policy" "lambda_dynamo_music" {
                 "dynamodb:PutItem",
                 "dynamodb:UpdateItem"
             ],
-            "Resource": "${aws_dynamodb_table.spotify-dynamo-music.arn}"
+            "Resource": "${aws_dynamodb_table.spotify-dynamo-music.arn}*"
         }
     ]
 }
