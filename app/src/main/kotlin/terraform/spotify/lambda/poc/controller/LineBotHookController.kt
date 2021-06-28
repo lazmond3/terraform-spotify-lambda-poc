@@ -3,7 +3,6 @@ package terraform.spotify.lambda.poc.controller
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
@@ -86,7 +85,7 @@ class LineBotHookController(
                 val playlistId = text.split(" ")[2]
                 val trackId = text.split(" ")[3]
 
-                val result = spotifyDbMapper.readRowOrNull(userId, playlistId, trackId, context.logger)
+                val result = spotifyDbMapper.readRowOrNull(playlistId, trackId, context.logger)
                 if (result != null) {
                     replyToken.let {
                         lineBotService.replyToMessage(
@@ -123,7 +122,7 @@ class LineBotHookController(
         replyToken: String?,
         logger: LambdaLogger
     ) {
-        val result = spotifyDbMapper.readRowOrNull(userId, playlistId, trackId, logger)
+        val result = spotifyDbMapper.readRowOrNull(playlistId, trackId, logger)
         if (result != null) {
             replyToken?.let {
                 lineBotService.replyToMessage(

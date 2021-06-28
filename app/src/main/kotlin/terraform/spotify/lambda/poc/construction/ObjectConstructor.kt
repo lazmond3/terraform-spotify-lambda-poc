@@ -30,6 +30,7 @@ class ObjectConstructor {
     )
     val spotifyTrackDynamoDbMapper = SpotifyTrackDynamoDbMapper(
         tableName = trackTableName,
+        gsiIndexName = "SpotifyDynamoMusicPlaylistIndex",
         dbClient = ddb
     )
     val spotifyService = SpotifyService(

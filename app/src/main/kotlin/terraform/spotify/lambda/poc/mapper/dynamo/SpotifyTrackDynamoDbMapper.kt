@@ -13,6 +13,7 @@ import kotlin.system.exitProcess
 
 class SpotifyTrackDynamoDbMapper(
     val tableName: String,
+    val gsiIndexName: String,
     val dbClient: AmazonDynamoDB,
 ) {
 
@@ -22,12 +23,9 @@ class SpotifyTrackDynamoDbMapper(
         - read
      */
 
-    fun readRowOrNull(userId: String, playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? {
-        val r = readRow(userId, playlistId, trackId, logger)?.item
-        return r?.let {
-            PlaylistTrack(it)
-        }
-    }
+    fun readRowOrNull(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? =
+        readRow(playlistId, trackId, logger)
+
 
     fun delete(userId: String, playlistId: String, trackId: String) {
         dbClient.deleteItem(
@@ -64,21 +62,41 @@ class SpotifyTrackDynamoDbMapper(
         }
     }
 
-    private fun readRow(userId: String, playlistId: String, trackId: String, logger: LambdaLogger): GetItemResult? =
-        dbClient.getItem(
-            GetItemRequest()
+    /* getItem じゃなくて query にしないといけない */
+    private fun readRow(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? {
+        val result = dbClient.query(
+            QueryRequest()
                 .withTableName(tableName)
-                .withKey(
+                .withIndexName(gsiIndexName)
+                .withKeyConditionExpression("PlaylistId = :playlistId and TrackId = :trackId")
+                .withExpressionAttributeValues(
                     mapOf(
-                        "UserId" to AttributeValue()
-                            .withS(userId),
-                        "PlaylistId" to AttributeValue()
-                            .withS(playlistId),
-                        "TrackId" to AttributeValue()
-                            .withS(trackId)
+                        ":playlistId" to AttributeValue(playlistId),
+                        ":trackId" to AttributeValue(trackId)
                     )
                 )
         )
+        if (result.items.size == 0) {
+            return null
+        } else {
+            return result.items[0].let {
+                PlaylistTrack(it)
+            }
+        }
+    }
+//        dbClient.getItem(
+//            GetItemRequest()
+//                .withTableName(tableName)
+//                .withKey(
+//                    mapOf(
+//                        "UserId" to AttributeValue()
+//                            .withS(userId),
+//                        "PlaylistId" to AttributeValue()
+//                            .withS(playlistId)
+//                    )
+//                )
+//
+//        )
 
 
     // 検証 or LIFF で登録するエンドポイント
