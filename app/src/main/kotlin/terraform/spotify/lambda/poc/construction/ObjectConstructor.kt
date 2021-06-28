@@ -16,7 +16,7 @@ class ObjectConstructor {
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
     val variables = EnvironmentVariables()
     val baseUrl = "https://accounts.spotify.com"
-    val lineBotHookController = LineBotHookController(variables.lineBotChannelAccessToken)
+    val lineBotHookController = LineBotHookController(variables.lineBotChannelAccessToken, this)
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(JacksonConverterFactory.create())
@@ -27,9 +27,9 @@ class ObjectConstructor {
         tableName = tableName,
         dbClient = ddb
     )
-//    val spotifyService = SpotifyService(
-//        spotifyApiClient = spotifyApiClient,
-//        variables = variables,
-//        userTokenDynamoDbMapper = userTokenDynamoDBMapper
-//    )
+    val spotifyService = SpotifyService(
+        spotifyApiClient = spotifyApiClient,
+        variables = variables,
+        userTokenDynamoDbMapper = userTokenDynamoDBMapper
+    )
 }

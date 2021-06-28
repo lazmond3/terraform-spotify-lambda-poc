@@ -3,7 +3,6 @@ package terraform.spotify.lambda.poc.service
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import terraform.spotify.lambda.poc.client.SpotifyApiClient
 import terraform.spotify.lambda.poc.entity.Token
-import terraform.spotify.lambda.poc.entity.UserToken
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
@@ -17,6 +16,14 @@ class SpotifyService(
     val spotifyApiClient: SpotifyApiClient,
     val userTokenDynamoDbMapper: UserTokenDynamoDbMapper
 ) {
+    fun registerNewPlaylistId(userId: String, playlistId: String, logger: LambdaLogger) {
+        val userToken = userTokenDynamoDbMapper.readRowOrNull(userId, logger)
+        val newUserToken = userToken?.copy(
+            playlistId = playlistId
+        ) ?: throw SystemException("userToken is null: userId: $userId")
+        userTokenDynamoDbMapper.update(newUserToken)
+    }
+
     fun readAccessTokenOrUpdated(userId: String, logger: LambdaLogger): String {
         val token = userTokenDynamoDbMapper.readTokenRowOrNull(userId, logger)
             ?: throw SystemException("No entry for UserId=$userId")
@@ -27,9 +34,7 @@ class SpotifyService(
         ) {
             // refresh Token する
             val refreshedAccessToken = refreshToken(token.refreshToken, logger)
-            val newUserToken = UserToken(
-                userId = userId,
-                refreshToken = token.refreshToken,
+            val newUserToken = token.copy(
                 accessToken = refreshedAccessToken.accessToken,
                 expiresAt = refreshedAccessToken.expiresIn + getUnixTime().toInt(),
                 updatedAt = makeNowTimeString()
@@ -44,6 +49,7 @@ class SpotifyService(
 
 
     // TODO: impl
+// 必ず毎回 Expire するようにしている。
     private fun checkExpired(expiresAt: Int): Boolean {
         return true
     }

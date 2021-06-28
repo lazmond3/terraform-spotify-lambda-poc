@@ -2,10 +2,14 @@ package terraform.spotify.lambda.poc.controller
 
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
+import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
 import terraform.spotify.lambda.poc.service.LineBotService
 
-class LineBotHookController(val token: String) {
+class LineBotHookController(
+    val token: String,
+    val objectConstructor: ObjectConstructor
+) {
     val lineBotService = LineBotService(token)
 
     fun handle(inputEvent: AwsInputEvent, context: Context): APIGatewayProxyResponseEvent {
@@ -16,6 +20,21 @@ class LineBotHookController(val token: String) {
         inputEvent.events.forEach {
             val message = "[received] ${it.message.text}"
             lineBotService.replyToMessage(it.replyToken, message)
+        }
+        // assert 入れたい
+        val text = inputEvent.events[0].message.text
+
+        val head = text.split(" ")[0]
+        val bodyValue = text.split(" ")[1]
+        when (head) {
+            "register-refresh" -> {
+
+            }
+            "register-playlist" -> {
+                val userId = inputEvent.events[0].source.userId
+                objectConstructor.spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
+            }
+            "add-to-playlist" -> ""
         }
         return APIGatewayProxyResponseEvent().apply {
             isBase64Encoded = false
