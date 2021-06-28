@@ -58,7 +58,8 @@ resource "aws_iam_policy" "lambda_dynamo_music" {
                 "dynamodb:Scan",
                 "dynamodb:BatchWriteItem",
                 "dynamodb:PutItem",
-                "dynamodb:UpdateItem"
+                "dynamodb:UpdateItem",
+                "dynamodb:DeleteItem"
             ],
             "Resource": "${aws_dynamodb_table.spotify-dynamo-music.arn}*"
         }
