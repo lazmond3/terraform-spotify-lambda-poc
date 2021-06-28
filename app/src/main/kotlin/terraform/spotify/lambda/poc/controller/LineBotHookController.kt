@@ -94,7 +94,7 @@ class LineBotHookController(
 //                            "[delete] the track is already registered. \n${trackId}"
 //                        )
 //                    }
-                    spotifyDbMapper.delete(userId, playlistId, trackId, context.logger)
+                    spotifyDbMapper.delete(playlistId, trackId, context.logger)
                 } else {
                     context.logger.log("[delete debug log] the track $trackId is not registered: ")
                 }

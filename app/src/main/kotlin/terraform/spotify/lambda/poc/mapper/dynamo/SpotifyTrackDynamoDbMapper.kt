@@ -27,7 +27,7 @@ class SpotifyTrackDynamoDbMapper(
         readRow(playlistId, trackId, logger)
 
 
-    fun delete(userId: String, playlistId: String, trackId: String, logger: LambdaLogger) {
+    fun delete(playlistId: String, trackId: String, logger: LambdaLogger?) {
         val result = dbClient.deleteItem(
             DeleteItemRequest()
                 .withTableName(tableName)
@@ -40,7 +40,7 @@ class SpotifyTrackDynamoDbMapper(
                     )
                 )
         )
-        logger.log("[delete] result: $result")
+        logger?.log("[delete] result: $result")
     }
 
     fun create(userId: String, playlistId: String, trackId: String, logger: LambdaLogger) {
