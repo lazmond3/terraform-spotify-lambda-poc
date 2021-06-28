@@ -6,6 +6,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import terraform.spotify.lambda.poc.client.SpotifyApiClient
 import terraform.spotify.lambda.poc.controller.LineBotHookController
+import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.service.SpotifyService
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
@@ -13,6 +14,7 @@ import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 class ObjectConstructor {
     val objectMapper = ObjectMapper()
     val tableName = "spotify-poc"
+    val trackTableName = "spotify-dynamo-music"
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
     val variables = EnvironmentVariables()
     val baseUrl = "https://accounts.spotify.com"
@@ -25,6 +27,10 @@ class ObjectConstructor {
 
     val userTokenDynamoDBMapper = UserTokenDynamoDbMapper(
         tableName = tableName,
+        dbClient = ddb
+    )
+    val spotifyTrackDynamoDbMapper = SpotifyTrackDynamoDbMapper(
+        tableName = trackTableName,
         dbClient = ddb
     )
     val spotifyService = SpotifyService(
