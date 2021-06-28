@@ -5,14 +5,18 @@ import com.amazonaws.services.lambda.runtime.LambdaLogger
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
+import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
+import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.service.LineBotService
+import terraform.spotify.lambda.poc.service.SpotifyService
 
 class LineBotHookController(
     val token: String,
-    val objectConstructor: ObjectConstructor
+    val spotifyDbMapper: SpotifyTrackDynamoDbMapper,
+    val userTokenDynamoDBMapper: UserTokenDynamoDbMapper,
+    val spotifyService: SpotifyService
 ) {
     val lineBotService = LineBotService(token)
-    val spotifyDbMapper = objectConstructor.spotifyTrackDynamoDbMapper
 
     fun handle(inputEvent: AwsInputEvent, context: Context): APIGatewayProxyResponseEvent {
         val headers = mapOf(
@@ -32,7 +36,7 @@ class LineBotHookController(
         val userId = inputEvent.events[0].source.userId
         when (head) {
             "register-refresh" -> {
-                objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
+                userTokenDynamoDBMapper.registerRefreshToken(
                     userId = userId,
                     refreshToken = bodyValue,
                     logger = context.logger
@@ -40,7 +44,7 @@ class LineBotHookController(
                 lineBotService.replyToMessage(inputEvent.events[0].replyToken, "registered refresh token")
             }
             "register-playlist" -> {
-                objectConstructor.spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
+                spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
             }
             "add-to-playlist-fulldebug" -> {
                 val userId = text.split(" ")[1]
@@ -55,7 +59,7 @@ class LineBotHookController(
             }
             "add-to-playlist" -> {
                 // userId から playlistId を取得する
-                val token = objectConstructor.userTokenDynamoDBMapper.readRowOrNull(
+                val token = userTokenDynamoDBMapper.readRowOrNull(
                     userId = userId,
                     context.logger
                 )
