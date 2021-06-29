@@ -2,8 +2,10 @@ package terraform.spotify.lambda.poc.service
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import terraform.spotify.lambda.poc.client.SpotifyApiAuthClient
+import terraform.spotify.lambda.poc.client.SpotifyApiClient
 import terraform.spotify.lambda.poc.entity.Token
 import terraform.spotify.lambda.poc.exception.SystemException
+import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 import java.time.LocalDateTime
@@ -14,7 +16,9 @@ import java.util.*
 class SpotifyService(
     val variables: EnvironmentVariables,
     val spotifyApiAuthClient: SpotifyApiAuthClient,
-    val userTokenDynamoDbMapper: UserTokenDynamoDbMapper
+    val spotifyApiClient: SpotifyApiClient,
+    val userTokenDynamoDbMapper: UserTokenDynamoDbMapper,
+    val spotifyTrackDynamoDbMapper: SpotifyTrackDynamoDbMapper
 ) {
     fun registerNewPlaylistId(userId: String, playlistId: String, logger: LambdaLogger) {
         val userToken = userTokenDynamoDbMapper.readRowOrNull(userId, logger)
@@ -23,6 +27,26 @@ class SpotifyService(
         ) ?: throw SystemException("userToken is null: userId: $userId")
         userTokenDynamoDbMapper.update(newUserToken)
     }
+
+    private fun addCurrentTrackToPlaylist() {
+        // userId
+        // dynamo から取得する
+
+        // spotify API で trackId を取得
+
+        // dynamo にすでに追加してないか検証
+
+        // もし追加してなかったら、 playlist に追加して、 dynamo にも追加する。
+
+        // userId に自由に line 投稿をしないといけない
+    }
+    private fun addToPlaylist(playlistId: String, trackId: String) {
+
+    }
+    private fun deleteFromPlaylist(playlistId: String, trackId: String) {
+
+    }
+
 
     fun readAccessTokenOrUpdated(userId: String, logger: LambdaLogger): String {
         val token = userTokenDynamoDbMapper.readTokenRowOrNull(userId, logger)

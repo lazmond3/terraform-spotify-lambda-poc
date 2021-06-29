@@ -19,7 +19,7 @@ class ObjectConstructor {
         registerModule(JavaTimeModule())
         registerModule(KotlinModule())
     }
-    
+
     val tableName = "spotify-poc"
     val trackTableName = "spotify-dynamo-music"
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
@@ -49,8 +49,10 @@ class ObjectConstructor {
     )
     val spotifyService = SpotifyService(
         spotifyApiAuthClient = spotifyApiAuthClient,
+        spotifyApiClient = spotifyApiClient,
         variables = variables,
-        userTokenDynamoDbMapper = userTokenDynamoDBMapper
+        userTokenDynamoDbMapper = userTokenDynamoDBMapper,
+        spotifyTrackDynamoDbMapper = spotifyTrackDynamoDbMapper
     )
 
     val lineBotHookController = LineBotHookController(
