@@ -157,6 +157,12 @@ class SpotifyApiClientTest {
     }
 
     @Test
+    fun localDate() {
+        val str = "2020-12-08"
+
+    }
+
+    @Test
     fun currentTrack() {
         val mockResponse = mockResponseFromJson(200, "json/current_track.json")
         mockWebServer.enqueue(mockResponse)

@@ -30,11 +30,11 @@ class ObjectConstructor {
 
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
-        .addConverterFactory(JacksonConverterFactory.create())
+        .addConverterFactory(JacksonConverterFactory.create(objectMapper))
         .build()
     val apiRetrofit = Retrofit.Builder()
         .baseUrl(apiBaseUrl)
-        .addConverterFactory(JacksonConverterFactory.create())
+        .addConverterFactory(JacksonConverterFactory.create(objectMapper))
         .build()
     val spotifyApiAuthClient = retrofit.create(SpotifyApiAuthClient::class.java)
     val spotifyApiClient = apiRetrofit.create(SpotifyApiClient::class.java)
