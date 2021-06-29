@@ -13,7 +13,7 @@ data class PlaylistTrack(
     constructor(result: Map<String, AttributeValue>) : this(
         // 本当は小文字にすべきだった？
         userId = result.get("UserId")?.s,
-        playlistId = result.get("PlayListId")?.s,
+        playlistId = result.get("PlaylistId")?.s,
         trackId = result.get("TrackId")?.s,
         updatedAt = result.get("UpdatedAt")?.s
     )

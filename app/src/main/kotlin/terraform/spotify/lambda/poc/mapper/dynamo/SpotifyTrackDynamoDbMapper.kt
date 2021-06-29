@@ -24,7 +24,7 @@ class SpotifyTrackDynamoDbMapper(
      */
 
     fun readRowOrNull(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? =
-        readRow(playlistId, trackId, logger)
+        readRow(playlistId, trackId)
 
 
     fun delete(playlistId: String, trackId: String, logger: LambdaLogger?) {
@@ -61,27 +61,32 @@ class SpotifyTrackDynamoDbMapper(
         }
     }
 
-    /* getItem じゃなくて query にしないといけない */
-    private fun readRow(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? {
-        val result = dbClient.query(
-            QueryRequest()
+    fun readRow(playlistId: String, trackId: String): PlaylistTrack? {
+//        val result = dbClient.query(
+//            QueryRequest()
+//                .withTableName(tableName)
+//                .withKeyConditionExpression("PlaylistId = :playlistId and TrackId = :trackId")
+//                .withExpressionAttributeValues(
+//                    mapOf(
+//                        ":playlistId" to AttributeValue(playlistId),
+//                        ":trackId" to AttributeValue(trackId)
+//                    )
+//                )
+//        )
+        val result = dbClient.getItem(
+            GetItemRequest()
                 .withTableName(tableName)
-//                .withIndexName(gsiIndexName)
-                .withKeyConditionExpression("PlaylistId = :playlistId and TrackId = :trackId")
-                .withExpressionAttributeValues(
+                .withKey(
                     mapOf(
-                        ":playlistId" to AttributeValue(playlistId),
-                        ":trackId" to AttributeValue(trackId)
+                        "PlaylistId" to AttributeValue()
+                            .withS(playlistId),
+                        "TrackId" to AttributeValue()
+                            .withS(trackId),
                     )
                 )
+
         )
-        if (result.items.size == 0) {
-            return null
-        } else {
-            return result.items[0].let {
-                PlaylistTrack(it)
-            }
-        }
+        return result.item?.let { PlaylistTrack(it) }
     }
 
 
