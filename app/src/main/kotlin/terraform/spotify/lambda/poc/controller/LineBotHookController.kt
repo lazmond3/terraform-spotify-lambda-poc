@@ -31,7 +31,9 @@ class LineBotHookController(
         val text = inputEvent.events[0].message.text
 
         val head = text.split(" ")[0]
-        val bodyValue = text.split(" ")[1]
+        val bodyValue = if (text.split(" ").size >= 2) {
+            text.split(" ")[1]
+        } else ""
         val userId = inputEvent.events[0].source.userId
         when (head) {
             "register-refresh" -> {
@@ -43,7 +45,7 @@ class LineBotHookController(
                 lineBotService.replyToMessage(inputEvent.events[0].replyToken, "registered refresh token")
             }
             "add-current" -> {
-                lineBotService.sendMessage(userId, text="add-current の send message test")
+                lineBotService.sendMessage(userId, text = "add-current の send message test")
                 spotifyService.addCurrentTrackToPlaylist(userId, context.logger)
             }
             "register-playlist" -> {
