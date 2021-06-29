@@ -8,6 +8,7 @@ import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.request.AddToPlaylistRequest
+import terraform.spotify.lambda.poc.request.DeleteFromPlaylistRequest
 import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 import java.time.LocalDateTime
@@ -40,7 +41,6 @@ class SpotifyService(
         if (playlistId == null) {
             return
         }
-//        assert(playlistId != null)
         // spotify API で trackId を取得
         val body = currentTrackInfo(token)
         val trackId = body.item.uri
@@ -70,6 +70,57 @@ class SpotifyService(
             )
             lineBotService.sendMessage(
                 userId, text = "追加が完了しました。 \n" +
+                        "by     : ${body.item.artists[0].name}\n" +
+                        "タイトル: ${body.item.name}\n" +
+                        "url   : ${body.item.externalUrls.spotify}"
+            )
+        }
+    }
+
+    fun deleteCurrentTrackFromPlaylist(userId: String, logger: LambdaLogger) {
+        // userId
+        // dynamo から取得する
+        // [x] access トークンを取得する 実装済み
+        val token: String = readAccessTokenOrUpdated(userId, logger)
+        val playlistId: String? = readPlaylistId(userId, logger)
+        if (playlistId == null) {
+            return
+        }
+        // spotify API で trackId を取得
+        val body = currentTrackInfo(token)
+        val trackId = body.item.uri
+
+        // dynamo にすでに追加してないか検証
+        if (isAlreadyAdded(playlistId, trackId)) {
+            val addedAt = getWhenAdded(playlistId, trackId)
+            // LINE でメッセージ返したい
+            lineBotService.sendMessage(userId, text = "この曲は、$addedAt にすでに追加されています。削除します")
+
+            val response = spotifyApiClient.deleteFromPlaylist(
+                authorizationString = "Bearer $token",
+                playlistId = playlistId,
+                body = DeleteFromPlaylistRequest(
+                    uris = listOf(trackId)
+                )
+            ).execute()
+            if (response.code() >= 300) {
+                lineBotService.sendMessage(
+                    userId, text = "追加に失敗しました(okhttp). response code = ${response.code()}"
+                )
+                return
+            }
+            spotifyTrackDynamoDbMapper.delete(
+                playlistId, trackId, logger
+            )
+            lineBotService.sendMessage(
+                userId, text = "削除が完了しました。 \n" +
+                        "by     : ${body.item.artists[0].name}\n" +
+                        "タイトル: ${body.item.name}\n" +
+                        "url   : ${body.item.externalUrls.spotify}"
+            )
+        } else {
+            lineBotService.sendMessage(
+                userId, text = "この曲は登録されていません。 \n" +
                         "by     : ${body.item.artists[0].name}\n" +
                         "タイトル: ${body.item.name}\n" +
                         "url   : ${body.item.externalUrls.spotify}"

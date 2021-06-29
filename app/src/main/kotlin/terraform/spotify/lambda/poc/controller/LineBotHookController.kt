@@ -48,6 +48,10 @@ class LineBotHookController(
                 lineBotService.sendMessage(userId, text = "add-current の send message test")
                 spotifyService.addCurrentTrackToPlaylist(userId, context.logger)
             }
+            "delete-current" -> {
+                lineBotService.sendMessage(userId, text = "delete-current の send message test")
+                spotifyService.deleteCurrentTrackFromPlaylist(userId, context.logger)
+            }
             "register-playlist" -> {
                 spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
             }
