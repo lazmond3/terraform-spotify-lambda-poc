@@ -10,12 +10,12 @@ import terraform.spotify.lambda.poc.service.LineBotService
 import terraform.spotify.lambda.poc.service.SpotifyService
 
 class LineBotHookController(
-    val token: String,
+    val lineBotService: LineBotService,
     val spotifyDbMapper: SpotifyTrackDynamoDbMapper,
     val userTokenDynamoDBMapper: UserTokenDynamoDbMapper,
     val spotifyService: SpotifyService
 ) {
-    val lineBotService = LineBotService(token)
+
 
     fun handle(inputEvent: AwsInputEvent, context: Context): APIGatewayProxyResponseEvent {
         val headers = mapOf(
@@ -41,6 +41,10 @@ class LineBotHookController(
                     logger = context.logger
                 )
                 lineBotService.replyToMessage(inputEvent.events[0].replyToken, "registered refresh token")
+            }
+            "add-current" -> {
+                lineBotService.sendMessage(userId, text="add-current の send message test")
+                spotifyService.addCurrentTrackToPlaylist(userId, context.logger)
             }
             "register-playlist" -> {
                 spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)

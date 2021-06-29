@@ -7,6 +7,8 @@ import terraform.spotify.lambda.poc.entity.Token
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
+import terraform.spotify.lambda.poc.request.AddToPlaylistRequest
+import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -18,7 +20,8 @@ class SpotifyService(
     val spotifyApiAuthClient: SpotifyApiAuthClient,
     val spotifyApiClient: SpotifyApiClient,
     val userTokenDynamoDbMapper: UserTokenDynamoDbMapper,
-    val spotifyTrackDynamoDbMapper: SpotifyTrackDynamoDbMapper
+    val spotifyTrackDynamoDbMapper: SpotifyTrackDynamoDbMapper,
+    val lineBotService: LineBotService
 ) {
     fun registerNewPlaylistId(userId: String, playlistId: String, logger: LambdaLogger) {
         val userToken = userTokenDynamoDbMapper.readRowOrNull(userId, logger)
@@ -28,27 +31,85 @@ class SpotifyService(
         userTokenDynamoDbMapper.update(newUserToken)
     }
 
-    private fun addCurrentTrackToPlaylist() {
+    fun addCurrentTrackToPlaylist(userId: String, logger: LambdaLogger) {
         // userId
         // dynamo から取得する
-
+        // [x] access トークンを取得する 実装済み
+        val token: String = readAccessTokenOrUpdated(userId, logger)
+        val playlistId: String? = readPlaylistId(userId, logger)
+        if (playlistId == null) {
+            return
+        }
+//        assert(playlistId != null)
         // spotify API で trackId を取得
+        val body = currentTrackInfo(token)
+        val trackId = body.item.uri
 
         // dynamo にすでに追加してないか検証
-
-        // もし追加してなかったら、 playlist に追加して、 dynamo にも追加する。
-
-        // userId に自由に line 投稿をしないといけない
+        if (isAlreadyAdded(playlistId, trackId)) {
+            val addedAt = getWhenAdded(playlistId, trackId)
+            // LINE でメッセージ返したい
+            lineBotService.sendMessage(userId, text = "この曲は、$addedAt にすでに追加されています。")
+        } else {
+            // もし追加してなかったら、 playlist に追加して、 dynamo にも追加する。
+            val response = spotifyApiClient.addToPlaylist(
+                authorizationString = "Bearer $token",
+                playlistId = playlistId,
+                body = AddToPlaylistRequest(
+                    uris = listOf(trackId)
+                )
+            ).execute()
+            if (response.code() >= 300) {
+                lineBotService.sendMessage(
+                    userId, text = "追加に失敗しました(okhttp). response code = ${response.code()}"
+                )
+                return
+            }
+            spotifyTrackDynamoDbMapper.create(
+                userId, playlistId, trackId, logger
+            )
+            lineBotService.sendMessage(
+                userId, text = "追加が完了しました。 \n" +
+                        "by     : ${body.item.artists[0].name}\n" +
+                        "タイトル: ${body.item.name}\n" +
+                        "url   : ${body.item.externalUrls.spotify}"
+            )
+        }
     }
-    private fun addToPlaylist(playlistId: String, trackId: String) {
+
+    private fun currentTrackInfo(token: String): SpotifyCurrentTrackResponse {
+        val response = spotifyApiClient.currentTrack(
+            authorizationString = "Bearer $token"
+        ).execute()
+        val body = response.body()
+
+        if (body != null) {
+            return body
+        } else throw SystemException("[spotifyService] currentTrack failed: code = ${response.code()}")
 
     }
-    private fun deleteFromPlaylist(playlistId: String, trackId: String) {
 
+    private fun isAlreadyAdded(playlistId: String, trackId: String): Boolean {
+        val result = spotifyTrackDynamoDbMapper.readRow(playlistId, trackId)
+        return result != null
     }
 
+    private fun getWhenAdded(playlistId: String, trackId: String): LocalDateTime? {
+        val result = spotifyTrackDynamoDbMapper.readRow(playlistId, trackId)
+        return result?.addedAt
+    }
 
-    fun readAccessTokenOrUpdated(userId: String, logger: LambdaLogger): String {
+    private fun readPlaylistId(userId: String, logger: LambdaLogger): String? {
+
+        // もし playlist が設定されてなかったら、
+        // ここで SystemException を出す。
+        // このハンドラ欲しいけど?
+        val token = userTokenDynamoDbMapper.readTokenRowOrNull(userId, logger)
+            ?: throw SystemException("No entry for UserId=$userId")
+        return token.playlistId
+    }
+
+    private fun readAccessTokenOrUpdated(userId: String, logger: LambdaLogger): String {
         val token = userTokenDynamoDbMapper.readTokenRowOrNull(userId, logger)
             ?: throw SystemException("No entry for UserId=$userId")
 
@@ -73,7 +134,7 @@ class SpotifyService(
 
 
     // TODO: impl
-// 必ず毎回 Expire するようにしている。
+    // 必ず毎回 Expire するようにしている。
     private fun checkExpired(expiresAt: Int): Boolean {
         return true
     }

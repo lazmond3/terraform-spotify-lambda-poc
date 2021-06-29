@@ -16,13 +16,6 @@ class SpotifyTrackDynamoDbMapper(
     val gsiIndexName: String,
     val dbClient: AmazonDynamoDB,
 ) {
-
-    /* TODO
-        - create
-        - delete
-        - read
-     */
-
     fun readRowOrNull(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? =
         readRow(playlistId, trackId)
 
@@ -44,10 +37,13 @@ class SpotifyTrackDynamoDbMapper(
     }
 
     fun create(userId: String, playlistId: String, trackId: String, logger: LambdaLogger) {
+        val now = LocalDateTime.now()
+        val addedAt = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         val item: Map<String, AttributeValue> = mapOf(
             "UserId" to AttributeValue(userId),
             "PlaylistId" to AttributeValue(playlistId),
-            "TrackId" to AttributeValue(trackId)
+            "TrackId" to AttributeValue(trackId),
+            "AddedAt" to AttributeValue(addedAt)
         )
         try {
             dbClient.putItem(tableName, item);
@@ -62,17 +58,6 @@ class SpotifyTrackDynamoDbMapper(
     }
 
     fun readRow(playlistId: String, trackId: String): PlaylistTrack? {
-//        val result = dbClient.query(
-//            QueryRequest()
-//                .withTableName(tableName)
-//                .withKeyConditionExpression("PlaylistId = :playlistId and TrackId = :trackId")
-//                .withExpressionAttributeValues(
-//                    mapOf(
-//                        ":playlistId" to AttributeValue(playlistId),
-//                        ":trackId" to AttributeValue(trackId)
-//                    )
-//                )
-//        )
         val result = dbClient.getItem(
             GetItemRequest()
                 .withTableName(tableName)
@@ -87,27 +72,6 @@ class SpotifyTrackDynamoDbMapper(
 
         )
         return result.item?.let { PlaylistTrack(it) }
-    }
-
-
-    // 検証 or LIFF で登録するエンドポイント
-    fun registerRefreshToken(userId: String, refreshToken: String, logger: LambdaLogger) {
-
-        val item: Map<String, AttributeValue> = mapOf(
-            "UserId" to AttributeValue(userId),
-            "RefreshToken" to AttributeValue(refreshToken),
-        )
-
-        try {
-            dbClient.putItem(tableName, item);
-        } catch (e: ResourceNotFoundException) {
-            logger.log("Error: The table \"$tableName\" can't be found.\n");
-            logger.log("Be sure that it exists and that you've typed its name correctly!");
-            exitProcess(1);
-        } catch (e: AmazonServiceException) {
-            logger.log("[amazon service exception] ${e.message}")
-            exitProcess(1);
-        }
     }
 
     private fun withSAttributeUpdateValue(value: String) =

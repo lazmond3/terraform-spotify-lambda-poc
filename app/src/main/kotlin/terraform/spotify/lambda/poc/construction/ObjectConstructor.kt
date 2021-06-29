@@ -11,6 +11,7 @@ import terraform.spotify.lambda.poc.client.SpotifyApiClient
 import terraform.spotify.lambda.poc.controller.LineBotHookController
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
+import terraform.spotify.lambda.poc.service.LineBotService
 import terraform.spotify.lambda.poc.service.SpotifyService
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 
@@ -36,7 +37,8 @@ class ObjectConstructor {
         .addConverterFactory(JacksonConverterFactory.create())
         .build()
     val spotifyApiAuthClient = retrofit.create(SpotifyApiAuthClient::class.java)
-    val spotifyApiClient = retrofit.create(SpotifyApiClient::class.java)
+    val spotifyApiClient = apiRetrofit.create(SpotifyApiClient::class.java)
+
 
     val userTokenDynamoDBMapper = UserTokenDynamoDbMapper(
         tableName = tableName,
@@ -47,16 +49,18 @@ class ObjectConstructor {
         gsiIndexName = "SpotifyDynamoMusicPlaylistIndex",
         dbClient = ddb
     )
+    val lineBotService = LineBotService(variables.lineBotChannelAccessToken)
     val spotifyService = SpotifyService(
         spotifyApiAuthClient = spotifyApiAuthClient,
         spotifyApiClient = spotifyApiClient,
         variables = variables,
         userTokenDynamoDbMapper = userTokenDynamoDBMapper,
-        spotifyTrackDynamoDbMapper = spotifyTrackDynamoDbMapper
+        spotifyTrackDynamoDbMapper = spotifyTrackDynamoDbMapper,
+        lineBotService = lineBotService
     )
 
     val lineBotHookController = LineBotHookController(
-        token = variables.lineBotChannelAccessToken,
+        lineBotService = lineBotService,
         spotifyDbMapper = spotifyTrackDynamoDbMapper,
         userTokenDynamoDBMapper = userTokenDynamoDBMapper,
         spotifyService = spotifyService
