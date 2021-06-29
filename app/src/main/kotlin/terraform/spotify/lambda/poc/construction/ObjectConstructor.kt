@@ -2,8 +2,11 @@ package terraform.spotify.lambda.poc.construction
 
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
+import terraform.spotify.lambda.poc.client.SpotifyApiAuthClient
 import terraform.spotify.lambda.poc.client.SpotifyApiClient
 import terraform.spotify.lambda.poc.controller.LineBotHookController
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
@@ -12,16 +15,27 @@ import terraform.spotify.lambda.poc.service.SpotifyService
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 
 class ObjectConstructor {
-    val objectMapper = ObjectMapper()
+    val objectMapper = ObjectMapper().apply {
+        registerModule(JavaTimeModule())
+        registerModule(KotlinModule())
+    }
+    
     val tableName = "spotify-poc"
     val trackTableName = "spotify-dynamo-music"
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
     val variables = EnvironmentVariables()
     val baseUrl = "https://accounts.spotify.com"
+    val apiBaseUrl = "https://api.spotify.com"
+
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(JacksonConverterFactory.create())
         .build()
+    val apiRetrofit = Retrofit.Builder()
+        .baseUrl(apiBaseUrl)
+        .addConverterFactory(JacksonConverterFactory.create())
+        .build()
+    val spotifyApiAuthClient = retrofit.create(SpotifyApiAuthClient::class.java)
     val spotifyApiClient = retrofit.create(SpotifyApiClient::class.java)
 
     val userTokenDynamoDBMapper = UserTokenDynamoDbMapper(
@@ -34,7 +48,7 @@ class ObjectConstructor {
         dbClient = ddb
     )
     val spotifyService = SpotifyService(
-        spotifyApiClient = spotifyApiClient,
+        spotifyApiAuthClient = spotifyApiAuthClient,
         variables = variables,
         userTokenDynamoDbMapper = userTokenDynamoDBMapper
     )

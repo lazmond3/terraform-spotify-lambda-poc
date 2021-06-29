@@ -1,7 +1,7 @@
 package terraform.spotify.lambda.poc.service
 
 import com.amazonaws.services.lambda.runtime.LambdaLogger
-import terraform.spotify.lambda.poc.client.SpotifyApiClient
+import terraform.spotify.lambda.poc.client.SpotifyApiAuthClient
 import terraform.spotify.lambda.poc.entity.Token
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
@@ -13,7 +13,7 @@ import java.util.*
 
 class SpotifyService(
     val variables: EnvironmentVariables,
-    val spotifyApiClient: SpotifyApiClient,
+    val spotifyApiAuthClient: SpotifyApiAuthClient,
     val userTokenDynamoDbMapper: UserTokenDynamoDbMapper
 ) {
     fun registerNewPlaylistId(userId: String, playlistId: String, logger: LambdaLogger) {
@@ -73,7 +73,7 @@ class SpotifyService(
         logger.log("base64: $base64ed")
         logger.log("refreshToken: $refreshToken")
 
-        spotifyApiClient.refreshToken(
+        spotifyApiAuthClient.refreshToken(
             authorizationString = "Basic $base64ed",
             grantType = "refresh_token",
             refreshToken = refreshToken,
