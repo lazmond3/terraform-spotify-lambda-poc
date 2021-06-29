@@ -72,7 +72,7 @@ data class SpotifyCurrentTrackAlbum(
     val id: String,
     val images: List<SpotifyCurrentTrackImage>,
     val name: String,
-    val releaseDate: LocalDate, // これちゃんと取得できるか
+    val releaseDate: String, // これちゃんと取得できるか
     val releaseDatePrecision: String, // "day"
     val totalTracks: Int,
     val type: String,
