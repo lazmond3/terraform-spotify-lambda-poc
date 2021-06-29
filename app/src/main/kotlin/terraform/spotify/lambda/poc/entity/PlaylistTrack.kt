@@ -17,7 +17,7 @@ data class PlaylistTrack(
         userId = result.get("UserId")?.s,
         playlistId = result.get("PlaylistId")?.s,
         trackId = result.get("TrackId")?.s,
-        addedAt = result.get("UpdatedAt")?.s?.let {
+        addedAt = result.get("AddedAt")?.s?.let {
             LocalDateTime.parse(it, DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         }
     )

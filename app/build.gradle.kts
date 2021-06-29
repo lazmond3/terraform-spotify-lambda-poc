@@ -12,7 +12,7 @@ plugins {
     id("org.jetbrains.kotlin.plugin.noarg") version "1.4.31"
     id("com.github.johnrengelman.shadow") version "7.0.0"
     // Apply the application plugin to add support for building a CLI application in Java.
-//    application
+    application
 }
 
 repositories {
@@ -55,10 +55,10 @@ dependencies {
 
 }
 
-//application {
+application {
 //    // Define the main class for the application.
-//    mainClass.set("terraform.spotify.lambda.poc.AppKt")
-//}
+    mainClass.set("terraform.spotify.lambda.poc.AppKt")
+}
 
 tasks {
 //    register<Zip> ("buildZip2") {

@@ -94,7 +94,13 @@ class SpotifyService(
         if (isAlreadyAdded(playlistId, trackId)) {
             val addedAt = getWhenAdded(playlistId, trackId)
             // LINE でメッセージ返したい
-            lineBotService.sendMessage(userId, text = "この曲は、$addedAt にすでに追加されています。削除します")
+            if (addedAt != null) {
+                val dateTimeformatter = DateTimeFormatter.ofPattern("yyyy年MM月dd日 HH時mm分")
+                val addedAtText = addedAt.format(dateTimeformatter)
+                lineBotService.sendMessage(userId, text = "この曲は、$addedAtText にすでに追加されています。削除します")
+            } else {
+                lineBotService.sendMessage(userId, text = "この曲はすでに追加されています。削除します")
+            }
 
             val response = spotifyApiClient.deleteFromPlaylist(
                 authorizationString = "Bearer $token",
