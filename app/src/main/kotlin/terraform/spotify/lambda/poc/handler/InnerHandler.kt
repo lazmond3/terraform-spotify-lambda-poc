@@ -36,7 +36,7 @@ class InnerHandler(
 //        logger.log("[debug 3rd] identity.identityPoolId: ${context.identity.identityPoolId}")
 //        logger.log("[debug 3rd] clientContext.client: ${context.clientContext.client}")
 //        logger.log("[debug 3rd] clientContext.custom: ${context.clientContext.custom}")
-        logger.log("[debug 3rd] clientContext.environment: ${context.clientContext.environment}")
+//        logger.log("[debug 3rd] clientContext.environment: ${context.clientContext.environment}")
         logger.log("[debug 3rd] ]]")
         logger.log("------------------------------------------------------------------")
 

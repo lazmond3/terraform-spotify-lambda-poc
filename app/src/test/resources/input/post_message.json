@@ -1,0 +1,107 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/callback",
+  "httpMethod": "POST",
+  "headers": {
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "true",
+    "CloudFront-Is-Mobile-Viewer": "false",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "JP",
+    "content-type": "application/json; charset=utf-8",
+    "Host": "uo7vejn591.execute-api.ap-northeast-1.amazonaws.com",
+    "User-Agent": "LineBotWebhook/2.0",
+    "Via": "2.0 928361d91d2e35c8835b8a9b90c89ae2.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "yd9Epkaf1nWM6LbVh7Aj7NDlz1WwZ1fRzfDLpj9srSX82S68DLpF1Q==",
+    "X-Amzn-Trace-Id": "Root=1-60dc8034-307732db02252c215951c792",
+    "X-Forwarded-For": "147.92.149.166, 64.252.162.118",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https",
+    "x-line-signature": "vHURlosxCLD98Lso/gdOUzd5jDeR/NKLa/muXcQVBUY="
+  },
+  "multiValueHeaders": {
+    "CloudFront-Forwarded-Proto": [
+      "https"
+    ],
+    "CloudFront-Is-Desktop-Viewer": [
+      "true"
+    ],
+    "CloudFront-Is-Mobile-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-SmartTV-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-Tablet-Viewer": [
+      "false"
+    ],
+    "CloudFront-Viewer-Country": [
+      "JP"
+    ],
+    "content-type": [
+      "application/json; charset=utf-8"
+    ],
+    "Host": [
+      "uo7vejn591.execute-api.ap-northeast-1.amazonaws.com"
+    ],
+    "User-Agent": [
+      "LineBotWebhook/2.0"
+    ],
+    "Via": [
+      "2.0 928361d91d2e35c8835b8a9b90c89ae2.cloudfront.net (CloudFront)"
+    ],
+    "X-Amz-Cf-Id": [
+      "yd9Epkaf1nWM6LbVh7Aj7NDlz1WwZ1fRzfDLpj9srSX82S68DLpF1Q=="
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-60dc8034-307732db02252c215951c792"
+    ],
+    "X-Forwarded-For": [
+      "147.92.149.166, 64.252.162.118"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ],
+    "x-line-signature": [
+      "vHURlosxCLD98Lso/gdOUzd5jDeR/NKLa/muXcQVBUY="
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "callback"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "554506578892",
+    "stage": "test",
+    "resourceId": "ixthbt",
+    "requestId": "d7c5d157-3ded-4c54-8371-a5827a0ab1f6",
+    "operationName": null,
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "apiKey": null,
+      "sourceIp": "147.92.149.166",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "LineBotWebhook/2.0",
+      "user": null,
+      "accessKey": null
+    },
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "POST",
+    "apiId": "uo7vejn591",
+    "path": "/test/callback",
+    "authorizer": null
+  },
+  "body": "{\"destination\":\"Uc91ed880f9d34c39d8ea5310781c32a7\",\"events\":[{\"type\":\"message\",\"message\":{\"type\":\"text\",\"id\":\"14314433627932\",\"text\":\"add-current\"},\"timestamp\":1625063475626,\"source\":{\"type\":\"user\",\"userId\":\"U6339db851f0dd06878589cb0e7008294\"},\"replyToken\":\"c3a68010c1a6414b9173ad90e50cb4f6\",\"mode\":\"active\"}]}",
+  "isBase64Encoded": false
+}
