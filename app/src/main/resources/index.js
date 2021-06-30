@@ -16,21 +16,9 @@ const obj = {
 obj.log("hello world")
 const liffId = "1656158895-Rygo23DL"
 
-obj.log(`[global] before data const: `);
-const data = `
-{
-    "iss": "https://access.line.me",
-    "sub": "U6339db851f0dd06878589cb0e7008294",
-    "aud": "1656158895",
-    "exp": 1625047165,
-    "iat": 1625043565,
-    "name": "Ryo.K",
-    "picture": "https://profile.line-scdn.net/0hrql_SQISLV5RJjv-RrVSCW1jIzMmCCsWKUBja3UhIzspEmkMbUZlOHcgczsoEG8AbkBrbSQucWp9"
-}
-`;
-
-obj.log(`[global] after  data const: ${data}`);
-obj.log(`[global] before function initializeLiff`);
+// obj.log(`[global] before data const: `);
+// obj.log(`[global] after  data const: ${data}`);
+// obj.log(`[global] before function initializeLiff`);
 
 function initializeLiff(myLiffId) {
     liff
@@ -68,7 +56,19 @@ const urlParams = new URLSearchParams(queryString);
 const code = urlParams.get("code")
 if (code) {
     obj.log(`[ifcode_] code: ${code}`)
-    fetch("/fetch", {
+    const data = `
+        {
+            "iss": "https://access.line.me",
+            "sub": "U6339db851f0dd06878589cb0e7008294",
+            "aud": "1656158895",
+            "exp": 1625047165,
+            "iat": 1625043565,
+            "code": "${code}"
+            "name": "Ryo.K",
+            "picture": "https://profile.line-scdn.net/0hrql_SQISLV5RJjv-RrVSCW1jIzMmCCsWKUBja3UhIzspEmkMbUZlOHcgczsoEG8AbkBrbSQucWp9"
+        }
+`;
+    fetch("https://uo7vejn591.execute-api.ap-northeast-1.amazonaws.com/test/post", {
         method: "POST",
         headers: {
             "Content-Type": 'application/json'
@@ -77,6 +77,9 @@ if (code) {
     }).then(e => {
         const js = e.json()
         obj.log(`[fetch] js log: ${js}`)
+    }).catch(e => {
+        const ej = JSON.stringify(ej);
+        obj.log(`[fetch error] e: ${e}, ej: ${ej}`);
     })
 } else {
     obj.log(`[ifcode_] no code.. 🥺`)
