@@ -1,0 +1,127 @@
+{
+  "resource": "/{proxy+}",
+  "path": "/post",
+  "httpMethod": "OPTIONS",
+  "headers": {
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Accept-Language": "ja-jp",
+    "access-control-request-headers": "content-type",
+    "access-control-request-method": "POST",
+    "CloudFront-Forwarded-Proto": "https",
+    "CloudFront-Is-Desktop-Viewer": "false",
+    "CloudFront-Is-Mobile-Viewer": "true",
+    "CloudFront-Is-SmartTV-Viewer": "false",
+    "CloudFront-Is-Tablet-Viewer": "false",
+    "CloudFront-Viewer-Country": "JP",
+    "Host": "uo7vejn591.execute-api.ap-northeast-1.amazonaws.com",
+    "origin": "https://34d18c2b1a91.ngrok.io",
+    "Referer": "https://34d18c2b1a91.ngrok.io/",
+    "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari Line/11.10.0 LIFF",
+    "Via": "2.0 8506672ae1a5a7cdd1de484800633f9c.cloudfront.net (CloudFront)",
+    "X-Amz-Cf-Id": "w4tPSOIOrVWftgWHfr0P1F2qWnhThYhZ4t6ZO9dGNda3gkHrVwhHUw==",
+    "X-Amzn-Trace-Id": "Root=1-60dc72cb-0465de88565afe2a4f5fcdd8",
+    "X-Forwarded-For": "153.242.70.141, 64.252.167.133",
+    "X-Forwarded-Port": "443",
+    "X-Forwarded-Proto": "https"
+  },
+  "multiValueHeaders": {
+    "Accept": [
+      "*/*"
+    ],
+    "Accept-Encoding": [
+      "gzip, deflate, br"
+    ],
+    "Accept-Language": [
+      "ja-jp"
+    ],
+    "access-control-request-headers": [
+      "content-type"
+    ],
+    "access-control-request-method": [
+      "POST"
+    ],
+    "CloudFront-Forwarded-Proto": [
+      "https"
+    ],
+    "CloudFront-Is-Desktop-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-Mobile-Viewer": [
+      "true"
+    ],
+    "CloudFront-Is-SmartTV-Viewer": [
+      "false"
+    ],
+    "CloudFront-Is-Tablet-Viewer": [
+      "false"
+    ],
+    "CloudFront-Viewer-Country": [
+      "JP"
+    ],
+    "Host": [
+      "uo7vejn591.execute-api.ap-northeast-1.amazonaws.com"
+    ],
+    "origin": [
+      "https://34d18c2b1a91.ngrok.io"
+    ],
+    "Referer": [
+      "https://34d18c2b1a91.ngrok.io/"
+    ],
+    "User-Agent": [
+      "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari Line/11.10.0 LIFF"
+    ],
+    "Via": [
+      "2.0 8506672ae1a5a7cdd1de484800633f9c.cloudfront.net (CloudFront)"
+    ],
+    "X-Amz-Cf-Id": [
+      "w4tPSOIOrVWftgWHfr0P1F2qWnhThYhZ4t6ZO9dGNda3gkHrVwhHUw=="
+    ],
+    "X-Amzn-Trace-Id": [
+      "Root=1-60dc72cb-0465de88565afe2a4f5fcdd8"
+    ],
+    "X-Forwarded-For": [
+      "153.242.70.141, 64.252.167.133"
+    ],
+    "X-Forwarded-Port": [
+      "443"
+    ],
+    "X-Forwarded-Proto": [
+      "https"
+    ]
+  },
+  "queryStringParameters": null,
+  "multiValueQueryStringParameters": null,
+  "pathParameters": {
+    "proxy": "post"
+  },
+  "stageVariables": null,
+  "requestContext": {
+    "accountId": "554506578892",
+    "stage": "test",
+    "resourceId": "ixthbt",
+    "requestId": "75543d69-0b5d-4e6e-9d2d-47a66f606c19",
+    "operationName": null,
+    "identity": {
+      "cognitoIdentityPoolId": null,
+      "accountId": null,
+      "cognitoIdentityId": null,
+      "caller": null,
+      "apiKey": null,
+      "sourceIp": "153.242.70.141",
+      "cognitoAuthenticationType": null,
+      "cognitoAuthenticationProvider": null,
+      "userArn": null,
+      "userAgent": "Mozilla/5.0 (iPhone; CPU iPhone OS 14_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 Safari Line/11.10.0 LIFF",
+      "user": null,
+      "accessKey": null
+    },
+    "resourcePath": "/{proxy+}",
+    "httpMethod": "OPTIONS",
+    "apiId": "uo7vejn591",
+    "path": "/test/post",
+    "authorizer": null
+  },
+  "body": null,
+  "isBase64Encoded": false
+}
