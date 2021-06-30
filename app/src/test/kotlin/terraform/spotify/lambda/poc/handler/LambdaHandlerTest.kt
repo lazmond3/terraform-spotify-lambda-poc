@@ -7,6 +7,7 @@ import com.linecorp.bot.model.message.Message
 import com.linecorp.bot.model.message.TemplateMessage
 import com.linecorp.bot.model.message.TextMessage
 import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.Disabled
 import org.junit.jupiter.api.Test
 import java.time.LocalDateTime
 import java.time.ZoneId
@@ -27,9 +28,9 @@ internal class LambdaHandlerTest {
     val channelToken =
         System.getenv("LINE_BOT_CHANNEL_ACCESS_TOKEN")
 
-//    @Test
+    @Test
+    @Disabled
     fun linebotTest() {
-        // secret
         val client = LineMessagingClient.builder(channelToken).build();
         val message = TextMessage("hello world!")
         val sentResult = client.pushMessage(
@@ -41,5 +42,15 @@ internal class LambdaHandlerTest {
         ).get()
 
         println("hell world, result: $sentResult")
+    }
+
+    @Test
+    fun postPreflightTest() {
+
+    }
+
+    @Test
+    fun postAccessTest() {
+
     }
 }
