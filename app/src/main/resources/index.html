@@ -1,11 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+
 <body>
-<h1>hello world</h1>
-<script src="index.js"></script>
+    <h1>hello world</h1>
+    <button id="liffLoginButton">
+        liffLogin
+    </button>
+    <button id="getAccessToken">
+        getAccessToken
+    </button>
+    <div>
+        <label>
+            url
+            <textarea id="url"></textarea>
+        </label>
+    </div>
+    <div>
+        <lable>
+            access token field:
+            <textarea id="accessTokenField"></textarea>
+            <!-- <input id="accessTokenField" > -->
+        </lable>
+    </div>
+    <div>
+        <lable>
+            uid:
+            <textarea id="uid"></textarea>
+            <!-- <input id="accessTokenField" > -->
+        </lable>
+    </div>
+    <div>
+        <lable>
+            decodedIdToken:
+            <textarea id="decoded"></textarea>
+            <!-- <input id="accessTokenField" > -->
+        </lable>
+    </div>
+
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="index.js"></script>
 </body>
+
 </html>
