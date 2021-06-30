@@ -1,0 +1,92 @@
+{
+  "timestamp": 1624960525343,
+  "context": null,
+  "progress_ms": 67415,
+  "item": {
+    "album": {
+      "album_type": "album",
+      "artists": [
+        {
+          "external_urls": {
+            "spotify": "https://open.spotify.com/artist/5FGlhIQqewJRV8fx24toG0"
+          },
+          "href": "https://api.spotify.com/v1/artists/5FGlhIQqewJRV8fx24toG0",
+          "id": "5FGlhIQqewJRV8fx24toG0",
+          "name": "福山雅治",
+          "type": "artist",
+          "uri": "spotify:artist:5FGlhIQqewJRV8fx24toG0"
+        }
+      ],
+      "external_urls": {
+        "spotify": "https://open.spotify.com/album/5B7SHLhAH0o7re8b7epOz1"
+      },
+      "href": "https://api.spotify.com/v1/albums/5B7SHLhAH0o7re8b7epOz1",
+      "id": "5B7SHLhAH0o7re8b7epOz1",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/ab67616d0000b2731f2560ca505e7afa43232461",
+          "width": 640
+        },
+        {
+          "height": 300,
+          "url": "https://i.scdn.co/image/ab67616d00001e021f2560ca505e7afa43232461",
+          "width": 300
+        },
+        {
+          "height": 64,
+          "url": "https://i.scdn.co/image/ab67616d000048511f2560ca505e7afa43232461",
+          "width": 64
+        }
+      ],
+      "name": "残響",
+      "release_date": "2009-06-30",
+      "release_date_precision": "day",
+      "total_tracks": 14,
+      "type": "album",
+      "uri": "spotify:album:5B7SHLhAH0o7re8b7epOz1"
+    },
+    "artists": [
+      {
+        "external_urls": {
+          "spotify": "https://open.spotify.com/artist/5FGlhIQqewJRV8fx24toG0"
+        },
+        "href": "https://api.spotify.com/v1/artists/5FGlhIQqewJRV8fx24toG0",
+        "id": "5FGlhIQqewJRV8fx24toG0",
+        "name": "福山雅治",
+        "type": "artist",
+        "uri": "spotify:artist:5FGlhIQqewJRV8fx24toG0"
+      }
+    ],
+    "disc_number": 1,
+    "duration_ms": 341933,
+    "explicit": false,
+    "external_ids": {
+      "isrc": "JPPO00946410"
+    },
+    "external_urls": {
+      "spotify": "https://open.spotify.com/track/5dH6gJVNZ5ID8EkTqRVWNx"
+    },
+    "href": "https://api.spotify.com/v1/tracks/5dH6gJVNZ5ID8EkTqRVWNx",
+    "id": "5dH6gJVNZ5ID8EkTqRVWNx",
+    "is_local": false,
+    "is_playable": true,
+    "name": "最愛",
+    "popularity": 43,
+    "preview_url": "https://p.scdn.co/mp3-preview/48a73826a26f872d1878d30cec17045a7e83b4dc?cid=ffcc26eb2fbf49d99d20a8f1b162cf7d",
+    "track_number": 7,
+    "type": "track",
+    "uri": "spotify:track:5dH6gJVNZ5ID8EkTqRVWNx"
+  },
+  "currently_playing_type": "track",
+  "actions": {
+    "disallows": {
+      "resuming": true,
+      "skipping_prev": true,
+      "toggling_repeat_context": true,
+      "toggling_repeat_track": true,
+      "toggling_shuffle": true
+    }
+  },
+  "is_playing": true
+}

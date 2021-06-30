@@ -9,3 +9,4 @@
 
 rootProject.name = "terraform-spotify-lambda-poc"
 include("app")
+include("appdynamo")

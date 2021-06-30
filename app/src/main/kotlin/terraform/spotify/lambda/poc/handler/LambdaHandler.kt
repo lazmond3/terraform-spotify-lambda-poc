@@ -1,52 +1,72 @@
 package terraform.spotify.lambda.poc.handler
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
-import com.fasterxml.jackson.databind.ObjectMapper
-import retrofit2.Retrofit
-import retrofit2.converter.jackson.JacksonConverterFactory
-import terraform.spotify.lambda.poc.client.SpotifyApiClient
-import terraform.spotify.lambda.poc.controller.LineBotHookController
-import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
-import terraform.spotify.lambda.poc.service.SpotifyService
-import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import terraform.spotify.lambda.poc.construction.ObjectConstructor
+import terraform.spotify.lambda.poc.entity.AwsInputEvent
+import terraform.spotify.lambda.poc.exception.SystemException
+import java.io.File
 
 
 class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-    val tableName = "spotify-poc"
-    val ddb = AmazonDynamoDBClientBuilder.defaultClient()
-    val variables = EnvironmentVariables()
-    val baseUrl = "https://accounts.spotify.com"
-    val objectMapper = ObjectMapper()
-    val lineBotHookController = LineBotHookController(variables.lineBotChannelAccessToken)
-    val retrofit = Retrofit.Builder()
-        .baseUrl(baseUrl)
-        .addConverterFactory(JacksonConverterFactory.create())
-        .build()
-    val spotifyApiClient = retrofit.create(SpotifyApiClient::class.java)
-
-    val userTokenDynamoDBMapper = UserTokenDynamoDbMapper(
-        tableName = tableName,
-        dbClient = ddb
-    )
-    val spotifyService = SpotifyService(
-        spotifyApiClient = spotifyApiClient,
-        variables = variables,
-        userTokenDynamoDbMapper = userTokenDynamoDBMapper
-    )
+    val objectConstructor = ObjectConstructor()
+    val lineBotHookController = objectConstructor.lineBotHookController
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent {
         val logger = context.logger
+        val objectMapper = objectConstructor.objectMapper
 
-        logger.log("------")
-        logger.log("input: $input")
-        logger.log("------")
+        logger.log("------------------------------------------------------------------")
+        logger.log("[debug 1st] input: $input")
+        logger.log("------------------------------------------------------------------")
+
 
         return if (input.path == "/callback") {
-            lineBotHookController.handle(input, context)
+            // web アクセス (GET) の場合、この部分はない。
+            val inputBody = input.body
+            val inputObject = objectMapper.readValue(input.body, AwsInputEvent::class.java)
+            logger.log("------")
+            logger.log("[debug] body: $inputBody")
+            logger.log("[debug] events: ")
+            inputObject.events.forEach {
+                logger.log("\t[debug] $it")
+            }
+            // LINE BOT のハンドラ
+            lineBotHookController.handle(inputObject, context)
+        } else if (input.path == "/index.html") {
+            val headers = mapOf(
+                "Content-Type" to "text/html"
+            )
+            APIGatewayProxyResponseEvent().apply {
+                isBase64Encoded = false
+                statusCode = 200
+                setHeaders(headers)
+
+                body = readFileAsString("index.html")
+            }
+        } else if (input.path == "/index.js") {
+            val headers = mapOf(
+                "Content-Type" to "text/javascript"
+            )
+            APIGatewayProxyResponseEvent().apply {
+                isBase64Encoded = false
+                statusCode = 200
+                setHeaders(headers)
+
+                body = readFileAsString("index.js")
+            }
+        } else if (input.path == "/") {
+            val headers = mapOf(
+                "Content-Type" to "text/html"
+            )
+            APIGatewayProxyResponseEvent().apply {
+                isBase64Encoded = false
+                statusCode = 200
+                setHeaders(headers)
+                body = readFileAsString("index.html")
+            }
         } else if (input.path == "/test") {
             val headers = mapOf(
                 "Content-Type" to "text/html"
@@ -72,5 +92,14 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
                         "</body></html>"
             }
         }
+    }
+
+    private fun readFileAsString(resourcePath: String): String {
+        val fullPath = javaClass.classLoader.getResource(resourcePath)?.path
+            ?: throw SystemException("Invalid resource path: $resourcePath")
+
+        val reader = File(fullPath).bufferedReader()
+        val text: String = reader.use { it.readText() }
+        return text
     }
 }

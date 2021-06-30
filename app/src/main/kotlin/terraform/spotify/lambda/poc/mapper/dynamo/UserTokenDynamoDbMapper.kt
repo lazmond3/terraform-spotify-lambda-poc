@@ -27,6 +27,13 @@ class UserTokenDynamoDbMapper(
         }
     }
 
+    fun readRowOrNull(userId: String, logger: LambdaLogger): UserToken? {
+        val r = readRow(userId, logger)?.item
+        return r?.let {
+            UserToken(it)
+        }
+    }
+
 
     // トークン更新したらこちらを使う
     fun updateWithRefreshedToken(userId: String, newAccessToken: String, expiresIn: Int, logger: LambdaLogger) {
@@ -58,6 +65,9 @@ class UserTokenDynamoDbMapper(
                         }
                         if (it.refreshToken != null) {
                             map.put("RefreshToken", withSAttributeUpdateValue(it.refreshToken))
+                        }
+                        if (it.playlistId != null) {
+                            map.put("PlayListId", withSAttributeUpdateValue(it.playlistId))
                         }
                         if (it.expiresAt != null) {
                             map.put("ExpiresAt", withNAttributeUpdateValue(it.expiresAt.toString()))

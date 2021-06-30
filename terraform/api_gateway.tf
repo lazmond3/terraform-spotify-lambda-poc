@@ -74,3 +74,23 @@ resource "aws_lambda_permission" "apigw" {
 output "base_url" {
   value = aws_api_gateway_deployment.example.invoke_url
 }
+
+
+resource "aws_api_gateway_domain_name" "main" {
+  certificate_arn = aws_acm_certificate_validation.main.certificate_arn
+  domain_name     = var.app_domain
+}
+
+# Example DNS record using Route53.
+# Route53 is not specifically required; any DNS host can be used.
+resource "aws_route53_record" "spotify-line" {
+  name    = aws_api_gateway_domain_name.main.domain_name
+  type    = "A"
+  zone_id = data.aws_route53_zone.main.id
+
+  alias {
+    evaluate_target_health = true
+    name                   = aws_api_gateway_domain_name.main.cloudfront_domain_name
+    zone_id                = aws_api_gateway_domain_name.main.cloudfront_zone_id
+  }
+}
