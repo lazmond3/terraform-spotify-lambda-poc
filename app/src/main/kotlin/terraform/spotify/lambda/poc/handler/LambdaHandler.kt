@@ -18,6 +18,7 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
 
         logger.log("------")
         logger.log("input: $input")
+        // web アクセス (GET) の場合、この部分はない。
         val inputBody = input.body
         val inputObject = objectMapper.readValue(input.body, AwsInputEvent::class.java)
         logger.log("------")
