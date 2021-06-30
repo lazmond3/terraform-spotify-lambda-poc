@@ -24,6 +24,7 @@ resource "aws_acm_certificate" "main" {
   domain_name = var.app_domain
 
   validation_method = "DNS"
+  provider          = "aws.virginia"
 
   lifecycle {
     create_before_destroy = true
