@@ -32,6 +32,8 @@ class InnerHandler(
         logger.log("[debug 3rd] invokedFunctionArn: ${context.identity}")
         logger.log("[debug 3rd] remainingTimeInMillis: ${context.remainingTimeInMillis}")
         logger.log("[debug 3rd] memoryLimitInMB: ${context.memoryLimitInMB}")
+
+        // ここの部分は null になる。
 //        logger.log("[debug 3rd] identity.identityId: ${context.identity.identityId}")
 //        logger.log("[debug 3rd] identity.identityPoolId: ${context.identity.identityPoolId}")
 //        logger.log("[debug 3rd] clientContext.client: ${context.clientContext.client}")
