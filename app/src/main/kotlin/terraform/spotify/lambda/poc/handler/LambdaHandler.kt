@@ -44,7 +44,7 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
                 statusCode = 200
                 setHeaders(headers)
 
-                body = readFile("index.html")
+                body = readFileAsString("index.html")
             }
         } else if (input.path == "/index.js") {
             val headers = mapOf(
@@ -55,7 +55,7 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
                 statusCode = 200
                 setHeaders(headers)
 
-                body = readFile("index.js")
+                body = readFileAsString("index.js")
             }
         } else if (input.path == "/") {
             val headers = mapOf(
@@ -65,7 +65,7 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
                 isBase64Encoded = false
                 statusCode = 200
                 setHeaders(headers)
-                body = readFile("index.html")
+                body = readFileAsString("index.html")
             }
         } else if (input.path == "/test") {
             val headers = mapOf(
@@ -94,7 +94,7 @@ class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProx
         }
     }
 
-    private fun readFile(resourcePath: String): String {
+    private fun readFileAsString(resourcePath: String): String {
         val fullPath = javaClass.classLoader.getResource(resourcePath)?.path
             ?: throw SystemException("Invalid resource path: $resourcePath")
 
