@@ -55,6 +55,32 @@ class InnerHandler(
             }
             // LINE BOT のハンドラ
             objectConstructor.lineBotHookController.handle(inputObject, context)
+        } else if (input.path == "/post") {
+            when (input.httpMethod) {
+                "OPTIONS" -> { // 今回追加した preflight
+                    val headers = mapOf(
+                        "Access-Control-Allow-Origin" to "*",
+                        "Access-Control-Allow-Methods" to "POST, GET, OPTIONS, DELETE",
+                        "Access-Control-Max-Age" to "86400"
+                    )
+                    APIGatewayProxyResponseEvent().apply {
+                        isBase64Encoded = false
+                        statusCode = 204
+                        setHeaders(headers)
+                    }
+                }
+                else -> {
+                    val headers = mapOf(
+                        "Content-Type" to "text/html"
+                    )
+                    APIGatewayProxyResponseEvent().apply {
+                        isBase64Encoded = false
+                        statusCode = 200
+                        setHeaders(headers)
+                        body = readFileAsString("index.html")
+                    }
+                }
+            }
         } else if (input.path == "/index.html") {
             val headers = mapOf(
                 "Content-Type" to "text/html"
