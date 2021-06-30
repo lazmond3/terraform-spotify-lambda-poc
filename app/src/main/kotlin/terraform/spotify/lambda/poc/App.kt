@@ -34,7 +34,7 @@ class Fun {
 }
 
 fun main() {
-    val objectMapper = ObjectConstructor().objectMapper
+    val objectMapper = ObjectConstructor(isForReal = false).objectMapper
 //    val objectMapper = ObjectMapper().apply {
 ////        registerModule(JavaTimeModule())
 //        registerModule(KotlinModule())

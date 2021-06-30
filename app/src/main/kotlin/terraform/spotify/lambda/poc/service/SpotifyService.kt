@@ -10,14 +10,14 @@ import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.request.AddToPlaylistRequest
 import terraform.spotify.lambda.poc.request.DeleteFromPlaylistRequest
 import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
-import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import terraform.spotify.lambda.poc.variables.EnvironmentVariablesInterface
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class SpotifyService(
-    val variables: EnvironmentVariables,
+    val variables: EnvironmentVariablesInterface,
     val spotifyApiAuthClient: SpotifyApiAuthClient,
     val spotifyApiClient: SpotifyApiClient,
     val userTokenDynamoDbMapper: UserTokenDynamoDbMapper,

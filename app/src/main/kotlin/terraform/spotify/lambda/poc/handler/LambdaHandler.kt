@@ -8,7 +8,7 @@ import terraform.spotify.lambda.poc.construction.ObjectConstructor
 
 
 class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
-    val objectConstructor = ObjectConstructor()
+    val objectConstructor = ObjectConstructor(isForReal = true)
     val innerHandler = InnerHandler(objectConstructor)
 
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent =
