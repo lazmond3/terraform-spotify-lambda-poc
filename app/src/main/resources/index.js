@@ -53,6 +53,43 @@ const queryString = window.location.search;
 obj.log(`[queryString] : ${queryString}`);
 const urlParams = new URLSearchParams(queryString);
 
+async function postDataString(url = '', data = {}) {
+    // 既定のオプションには * が付いています
+    const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: (data) // 本文のデータ型は "Content-Type" ヘッダーと一致する必要があります
+    })
+    return response.json(); // レスポンスの JSON を解析
+}
+
+async function postData(url = '', data = {}) {
+    // 既定のオプションには * が付いています
+    const response = await fetch(url, {
+        method: 'POST', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
+        credentials: 'same-origin', // include, *same-origin, omit
+        headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        redirect: 'follow', // manual, *follow, error
+        referrerPolicy: 'no-referrer', // no-referrer, *no-referrer-when-downgrade, origin, origin-when-cross-origin, same-origin, strict-origin, strict-origin-when-cross-origin, unsafe-url
+        body: JSON.stringify(data) // 本文のデータ型は "Content-Type" ヘッダーと一致する必要があります
+    })
+    return response.json(); // レスポンスの JSON を解析
+}
+
+
 const code = urlParams.get("code")
 if (code) {
     obj.log(`[ifcode_] code: ${code}`)
@@ -68,7 +105,15 @@ if (code) {
             "picture": "https://profile.line-scdn.net/0hrql_SQISLV5RJjv-RrVSCW1jIzMmCCsWKUBja3UhIzspEmkMbUZlOHcgczsoEG8AbkBrbSQucWp9"
         }
 `;
-    fetch("https://uo7vejn591.execute-api.ap-northeast-1.amazonaws.com/test/post", {
+    // (async () => {
+    //     const result = await postDataString('/post', data);
+    //     obj.log(`result in postDataString: ${result}`)
+    // })();
+
+    // .then(data => {
+    // console.log(data); // `data.json()` の呼び出しで解釈された JSON データ
+    // });
+    fetch("/post", {
         method: "POST",
         headers: {
             "Content-Type": 'application/json'
@@ -76,9 +121,9 @@ if (code) {
         body: data
     }).then(e => {
         const js = e.json()
-        obj.log(`[fetch] js log: ${js}`)
+        obj.log(`[fetch] js log: ${JSON.stringify(js)}`)
     }).catch(e => {
-        const ej = JSON.stringify(ej);
+        const ej = JSON.stringify(e);
         obj.log(`[fetch error] e: ${e}, ej: ${ej}`);
     })
 } else {

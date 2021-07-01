@@ -73,15 +73,12 @@ class InnerHandler(
                     }
                 }
                 else -> {
-                    val headers = mapOf(
-                        "Content-Type" to "text/html"
-                    )
+                    val headers = emptyMap<String, String>()
                     logger.log("[option ではない post の結果] index.html を返却する return 直前")
                     APIGatewayProxyResponseEvent().apply {
                         isBase64Encoded = false
                         statusCode = 200
                         setHeaders(headers)
-                        body = readFileAsString("index.html")
                     }
                 }
             }
