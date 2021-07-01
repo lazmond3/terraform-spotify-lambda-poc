@@ -93,18 +93,26 @@ async function postData(url = '', data = {}) {
 const code = urlParams.get("code")
 if (code) {
     obj.log(`[ifcode_] code: ${code}`)
-    const data = `
-        {
-            "iss": "https://access.line.me",
-            "sub": "U6339db851f0dd06878589cb0e7008294",
-            "aud": "1656158895",
-            "exp": 1625047165,
-            "iat": 1625043565,
-            "code": "${code}",
-            "name": "Ryo.K",
-            "picture": "https://profile.line-scdn.net/0hrql_SQISLV5RJjv-RrVSCW1jIzMmCCsWKUBja3UhIzspEmkMbUZlOHcgczsoEG8AbkBrbSQucWp9"
-        }
-`;
+//     const data = `
+//         {
+//             "iss": "https://access.line.me",
+//             "sub": "U6339db851f0dd06878589cb0e7008294",
+//             "aud": "1656158895",
+//             "exp": 1625047165,
+//             "iat": 1625043565,
+//             "code": "${code}",
+//             "name": "Ryo.K",
+//             "picture": "https://profile.line-scdn.net/0hrql_SQISLV5RJjv-RrVSCW1jIzMmCCsWKUBja3UhIzspEmkMbUZlOHcgczsoEG8AbkBrbSQucWp9"
+//         }
+// `;
+    const decoded = decodeJwt(idTokenJwt);
+    const data = {
+        ...decoded,
+        code: code
+    }
+
+    obj.log(`[decoded data] ${JSON.stringify(data)}`)
+
     // (async () => {
     //     const result = await postDataString('/post', data);
     //     obj.log(`result in postDataString: ${result}`)
@@ -118,7 +126,7 @@ if (code) {
         headers: {
             "Content-Type": 'application/json'
         },
-        body: data
+        body: JSON.stringify(data)
     }).then(e => {
         const js = e.json()
         obj.log(`[post fetch] 正常終了: js log: ${JSON.stringify(js)}`)
