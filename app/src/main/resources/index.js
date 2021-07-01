@@ -121,7 +121,7 @@ if (code) {
         body: data
     }).then(e => {
         const js = e.json()
-        obj.log(`[fetch] js log: ${JSON.stringify(js)}`)
+        obj.log(`[fetch] 正常終了: js log: ${JSON.stringify(js)}`)
     }).catch(e => {
         const ej = JSON.stringify(e);
         obj.log(`[fetch error] e: ${e}, ej: ${ej}`);
