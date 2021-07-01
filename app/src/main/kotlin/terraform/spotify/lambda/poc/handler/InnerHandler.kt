@@ -7,6 +7,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
 import terraform.spotify.lambda.poc.exception.SystemException
+import terraform.spotify.lambda.poc.request.PostLineUserDataWithCodeRequest
 import java.io.File
 
 
@@ -69,6 +70,30 @@ class InnerHandler(
                     APIGatewayProxyResponseEvent().apply {
                         isBase64Encoded = false
                         statusCode = 204
+                        setHeaders(headers)
+                    }
+                }
+                "POST" -> {
+                    val headers = emptyMap<String, String>()
+                    val postRequest = objectMapper.readValue(input.body, PostLineUserDataWithCodeRequest::class.java)
+                    val userId = postRequest.sub
+                    val code = postRequest.code
+
+                    // 1. code から refresh token を取得する
+                    val response = objectConstructor.spotifyService.acquireRefreshToken(code = code)
+                    val refreshToken = response.refreshToken
+
+                    // 2. refresh token を userId に対して、更新する。
+                    objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
+                        userId = userId,
+                        refreshToken = refreshToken,
+                        logger = logger
+                    )
+
+                    logger.log("[post の結果] index.html を返却する return 直前")
+                    APIGatewayProxyResponseEvent().apply {
+                        isBase64Encoded = false
+                        statusCode = 200
                         setHeaders(headers)
                     }
                 }

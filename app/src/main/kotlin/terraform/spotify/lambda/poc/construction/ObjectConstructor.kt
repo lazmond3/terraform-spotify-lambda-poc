@@ -36,6 +36,7 @@ class ObjectConstructor(
         }
     val baseUrl = "https://accounts.spotify.com"
     val apiBaseUrl = "https://api.spotify.com"
+    val redirectUrl = "https://liff.line.me/1656158895-Rygo23DL"
 
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
@@ -65,7 +66,8 @@ class ObjectConstructor(
         variables = variables,
         userTokenDynamoDbMapper = userTokenDynamoDBMapper,
         spotifyTrackDynamoDbMapper = spotifyTrackDynamoDbMapper,
-        lineBotService = lineBotService
+        lineBotService = lineBotService,
+        objectConstructor = this
     )
 
     val lineBotHookController = LineBotHookController(
