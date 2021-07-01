@@ -16,9 +16,8 @@ const obj = {
 obj.log("hello world")
 const liffId = "1656158895-Rygo23DL"
 
-// obj.log(`[global] before data const: `);
-// obj.log(`[global] after  data const: ${data}`);
-// obj.log(`[global] before function initializeLiff`);
+obj.log(`[global] before data const: `);
+obj.log(`[global] before function initializeLiff`);
 
 function initializeLiff(myLiffId) {
     liff
@@ -32,14 +31,18 @@ function initializeLiff(myLiffId) {
             const decoded = decodeJwt(idTokenJwt);
             obj.log(`[liff init] decoded: ${decoded}`)
             const idToken = liff.getDecodedIDToken();
+
             document.getElementById("decoded").textContent = JSON.stringify(idToken);
-
-
             document.getElementById("uid").textContent = idToken.sub
             document.getElementById("url").textContent = location.href;
 
             // 1. init に成功して、データを飛ばして mode to reg にできたら、spotify にリダイレクトする。
             // [fetch API]
+            const code = urlParams.get("code")
+            if (code) {
+                decodedSendPost(decoded, code, obj);
+            }
+
 
         })
         .catch((err) => {
@@ -90,22 +93,18 @@ async function postData(url = '', data = {}) {
 }
 
 
+
+
 const code = urlParams.get("code")
-if (code) {
-    obj.log(`[ifcode_] code: ${code}`)
-//     const data = `
-//         {
-//             "iss": "https://access.line.me",
-//             "sub": "U6339db851f0dd06878589cb0e7008294",
-//             "aud": "1656158895",
-//             "exp": 1625047165,
-//             "iat": 1625043565,
-//             "code": "${code}",
-//             "name": "Ryo.K",
-//             "picture": "https://profile.line-scdn.net/0hrql_SQISLV5RJjv-RrVSCW1jIzMmCCsWKUBja3UhIzspEmkMbUZlOHcgczsoEG8AbkBrbSQucWp9"
-//         }
-// `;
-    const decoded = decodeJwt(idTokenJwt);
+
+
+function decodedSendPost(decoded, code, obj) {
+    // obj.log(`[ifcode_] code: ${code}`)
+    const idTokenJwt = liff.getIDToken();
+    obj.log(`before code`)
+    // const decoded = decodeJwt(idTokenJwt);
+    obj.log(`[decoded] ${JSON.stringify(decoded)}`)
+    obj.log(`after decode code ${decoded}`)
     const data = {
         ...decoded,
         code: code
@@ -113,15 +112,9 @@ if (code) {
 
     obj.log(`[decoded data] ${JSON.stringify(data)}`)
 
-    // (async () => {
-    //     const result = await postDataString('/post', data);
-    //     obj.log(`result in postDataString: ${result}`)
-    // })();
 
-    // .then(data => {
-    // console.log(data); // `data.json()` の呼び出しで解釈された JSON データ
-    // });
-    fetch("/test/post", {
+    // fetch("/post", {
+        fetch("/test/post", {
         method: "POST",
         headers: {
             "Content-Type": 'application/json'
@@ -134,6 +127,13 @@ if (code) {
         const ej = JSON.stringify(e);
         obj.log(`[fetch error] e: ${e}, ej: ${ej}`);
     })
+}
+
+
+if (code) {
+    initializeLiff(liffId);
+
+
 } else {
     obj.log(`[ifcode_] no code.. 🥺`)
     initializeLiff(liffId);
