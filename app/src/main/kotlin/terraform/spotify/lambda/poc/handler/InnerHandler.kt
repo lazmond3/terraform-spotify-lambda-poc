@@ -58,11 +58,14 @@ class InnerHandler(
         } else if (input.path == "/post") {
             when (input.httpMethod) {
                 "OPTIONS" -> { // 今回追加した preflight
+                    logger.log("[debug option] post に 届いた")
                     val headers = mapOf(
                         "Access-Control-Allow-Origin" to "*",
                         "Access-Control-Allow-Methods" to "POST, GET, OPTIONS, DELETE",
                         "Access-Control-Max-Age" to "86400"
                     )
+                    logger.log("[debug option] return 直前")
+
                     APIGatewayProxyResponseEvent().apply {
                         isBase64Encoded = false
                         statusCode = 204
@@ -73,6 +76,7 @@ class InnerHandler(
                     val headers = mapOf(
                         "Content-Type" to "text/html"
                     )
+                    logger.log("[option ではない post の結果] index.html を返却する return 直前")
                     APIGatewayProxyResponseEvent().apply {
                         isBase64Encoded = false
                         statusCode = 200
