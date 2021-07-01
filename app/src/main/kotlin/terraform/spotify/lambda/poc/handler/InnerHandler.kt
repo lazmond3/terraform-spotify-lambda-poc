@@ -84,11 +84,20 @@ class InnerHandler(
                     val refreshToken = response.refreshToken
 
                     // 2. refresh token を userId に対して、更新する。
-                    objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
-                        userId = userId,
-                        refreshToken = refreshToken,
-                        logger = logger
-                    )
+                    val userToken = objectConstructor.userTokenDynamoDBMapper.readRowOrNull(userId, logger)
+                    if (userToken != null) {
+                        objectConstructor.userTokenDynamoDBMapper.update(
+                            userToken.copy(
+                                refreshToken = refreshToken
+                            )
+                        )
+                    } else {
+                        objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
+                            userId = userId,
+                            refreshToken = refreshToken,
+                            logger = logger
+                        )
+                    }
 
                     logger.log("[post の結果] index.html を返却する return 直前")
                     APIGatewayProxyResponseEvent().apply {
