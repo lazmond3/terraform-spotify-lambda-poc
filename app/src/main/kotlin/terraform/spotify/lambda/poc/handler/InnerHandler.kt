@@ -93,7 +93,7 @@ class InnerHandler(
 
                 body = readFileAsString("index.html")
             }
-        } else if (input.path == "/test/index.js") {
+        } else if (input.path == "/index.js") {
             val headers = mapOf(
                 "Content-Type" to "text/javascript"
             )
