@@ -113,7 +113,7 @@ if (code) {
     // .then(data => {
     // console.log(data); // `data.json()` の呼び出しで解釈された JSON データ
     // });
-    fetch("/post", {
+    fetch("/test/post", {
         method: "POST",
         headers: {
             "Content-Type": 'application/json'
