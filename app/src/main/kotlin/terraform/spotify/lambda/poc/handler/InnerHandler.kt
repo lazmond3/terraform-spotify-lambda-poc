@@ -23,16 +23,16 @@ class InnerHandler(
         logger.log("[debug 2nd] objectMapper: ")
         logger.log(objectMapper.writeValueAsString(input))
         logger.log("------------------------------------------------------------------")
-        logger.log("[debug 3rd] context: [[")
-        logger.log("[debug 3rd] awsRequestId: ${context.awsRequestId}")
-        logger.log("[debug 3rd] logGroupName: ${context.logGroupName}")
-        logger.log("[debug 3rd] logStreamName: ${context.logStreamName}")
-        logger.log("[debug 3rd] functionName: ${context.functionName}")
-        logger.log("[debug 3rd] functionVersion: ${context.functionVersion}")
-        logger.log("[debug 3rd] invokedFunctionArn: ${context.invokedFunctionArn}")
-        logger.log("[debug 3rd] invokedFunctionArn: ${context.identity}")
-        logger.log("[debug 3rd] remainingTimeInMillis: ${context.remainingTimeInMillis}")
-        logger.log("[debug 3rd] memoryLimitInMB: ${context.memoryLimitInMB}")
+//        logger.log("[debug 3rd] context: [[")
+//        logger.log("[debug 3rd] awsRequestId: ${context.awsRequestId}")
+//        logger.log("[debug 3rd] logGroupName: ${context.logGroupName}")
+//        logger.log("[debug 3rd] logStreamName: ${context.logStreamName}")
+//        logger.log("[debug 3rd] functionName: ${context.functionName}")
+//        logger.log("[debug 3rd] functionVersion: ${context.functionVersion}")
+//        logger.log("[debug 3rd] invokedFunctionArn: ${context.invokedFunctionArn}")
+//        logger.log("[debug 3rd] invokedFunctionArn: ${context.identity}")
+//        logger.log("[debug 3rd] remainingTimeInMillis: ${context.remainingTimeInMillis}")
+//        logger.log("[debug 3rd] memoryLimitInMB: ${context.memoryLimitInMB}")
 
         // ここの部分は null になる。
 //        logger.log("[debug 3rd] identity.identityId: ${context.identity.identityId}")
@@ -40,7 +40,7 @@ class InnerHandler(
 //        logger.log("[debug 3rd] clientContext.client: ${context.clientContext.client}")
 //        logger.log("[debug 3rd] clientContext.custom: ${context.clientContext.custom}")
 //        logger.log("[debug 3rd] clientContext.environment: ${context.clientContext.environment}")
-        logger.log("[debug 3rd] ]]")
+//        logger.log("[debug 3rd] ]]")
         logger.log("------------------------------------------------------------------")
 
 
@@ -61,6 +61,7 @@ class InnerHandler(
                 "OPTIONS" -> { // 今回追加した preflight
                     logger.log("[debug option] post に 届いた")
                     val headers = mapOf(
+                        "Cache-Control" to "no-store, no-chache",
                         "Access-Control-Allow-Origin" to "*",
                         "Access-Control-Allow-Methods" to "POST, GET, OPTIONS, DELETE",
                         "Access-Control-Max-Age" to "86400"
@@ -74,7 +75,9 @@ class InnerHandler(
                     }
                 }
                 "POST" -> {
-                    val headers = emptyMap<String, String>()
+                    val headers = mapOf<String, String>(
+                        "Cache-Control" to "no-store, no-chache"
+                    )
                     val postRequest = objectMapper.readValue(input.body, PostLineUserDataWithCodeRequest::class.java)
                     val userId = postRequest.sub
                     val code = postRequest.code
@@ -118,6 +121,7 @@ class InnerHandler(
             }
         } else if (input.path == "/index.html") {
             val headers = mapOf(
+                "Cache-Control" to "no-store, no-chache",
                 "Content-Type" to "text/html"
             )
             APIGatewayProxyResponseEvent().apply {
@@ -129,6 +133,7 @@ class InnerHandler(
             }
         } else if (input.path == "/index.js") {
             val headers = mapOf(
+                "Cache-Control" to "no-store, no-chache",
                 "Content-Type" to "text/javascript"
             )
             APIGatewayProxyResponseEvent().apply {
@@ -140,6 +145,7 @@ class InnerHandler(
             }
         } else if (input.path == "/") {
             val headers = mapOf(
+                "Cache-Control" to "no-store, no-chache",
                 "Content-Type" to "text/html"
             )
             APIGatewayProxyResponseEvent().apply {
