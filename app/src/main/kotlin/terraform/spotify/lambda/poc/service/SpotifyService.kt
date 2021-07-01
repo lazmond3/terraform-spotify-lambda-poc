@@ -223,7 +223,11 @@ class SpotifyService(
         val body = response.body()
         if (response.isSuccessful && body != null) {
             return body
-        } else throw SystemException("[spotify-service] acquireRefreshToken failed code: ${response.code()}")
+        } else throw SystemException(
+            "[spotify-service] acquireRefreshToken failed code: ${response.code()} body: ${
+                response.errorBody()?.string()
+            }"
+        )
     }
 
     fun refreshToken(refreshToken: String, logger: LambdaLogger): Token {
