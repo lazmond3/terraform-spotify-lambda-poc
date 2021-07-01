@@ -81,7 +81,7 @@ class SpotifyApiAuthClientTest {
         val response = spotifyApiAuthClient.acquireRefreshToken(
             authorizationString = "",
             code = "",
-            redirectUrl = ""
+            redirectUri = ""
         )
         response.execute().let {
             assert(it.isSuccessful)

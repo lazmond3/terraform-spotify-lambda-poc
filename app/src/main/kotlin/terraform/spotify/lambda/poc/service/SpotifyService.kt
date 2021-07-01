@@ -217,7 +217,7 @@ class SpotifyService(
         val base64ed = Base64.getEncoder().encodeToString(bear.toByteArray())
         val response = spotifyApiAuthClient.acquireRefreshToken(
             authorizationString = "Basic $base64ed",
-            redirectUrl = objectConstructor.redirectUrl,
+            redirectUri = objectConstructor.redirectUrl,
             code = code
         ).execute()
         val body = response.body()

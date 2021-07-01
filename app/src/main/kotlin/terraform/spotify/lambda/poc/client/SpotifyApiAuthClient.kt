@@ -24,7 +24,7 @@ interface SpotifyApiAuthClient {
         @Header("Authorization") authorizationString: String,
         @Field("grant_type") grantType: String = "authorization_code",
         @Field("code") code: String,
-        @Field("redirect_url") redirectUrl: String
+        @Field("redirect_uri") redirectUri: String
     ): Call<AcquireRefreshTokenResponse>
 
 }
