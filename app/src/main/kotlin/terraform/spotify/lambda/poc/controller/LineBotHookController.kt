@@ -59,6 +59,7 @@ class LineBotHookController(
                     spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
                 } else {
                     val response = spotifyService.playlsits(userId, context.logger)
+                    context.logger.log("[controller : response register playlist] ${response}")
                     lineBotService.sendQuickReplyMessage(
                         mid = userId,
                         text = "プレイリストを選んでください",
