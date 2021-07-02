@@ -11,6 +11,7 @@ import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.request.AddToPlaylistRequest
 import terraform.spotify.lambda.poc.request.DeleteFromPlaylistRequest
 import terraform.spotify.lambda.poc.response.spotify.AcquireRefreshTokenResponse
+import terraform.spotify.lambda.poc.response.spotify.PlaylistResponse
 import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
 import terraform.spotify.lambda.poc.variables.EnvironmentVariablesInterface
 import java.time.LocalDateTime
@@ -150,7 +151,23 @@ class SpotifyService(
                 response.errorBody()?.string()
             }"
         )
+    }
 
+    fun playlsits(userId: String, logger: LambdaLogger): PlaylistResponse {
+        val token: String = readAccessTokenOrUpdated(userId, logger)
+        val response = spotifyApiClient.getPlaylists(
+            authorizationString = "Bearer $token",
+            limit = 3
+        ).execute()
+        val body = response.body()
+
+        if (body != null) {
+            return body
+        } else throw SystemException(
+            "[spotifyService] playlists failed: code = ${response.code()} error = ${
+                response.errorBody()?.string()
+            }"
+        )
     }
 
     private fun isAlreadyAdded(playlistId: String, trackId: String): Boolean {

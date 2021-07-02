@@ -10,10 +10,11 @@ import terraform.spotify.lambda.poc.response.spotify.PlaylistResponse
 import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
 
 interface SpotifyApiClient {
-    @GET("/v1/me/player/currently-playing?market=JP")
+    @GET("/v1/me/player/currently-playing")
     fun currentTrack(
         @Header("Authorization") authorizationString: String,
-        @Header("Accept-Language") acceptLanguage: String = "ja;q=1"
+        @Header("Accept-Language") acceptLanguage: String = "ja;q=1",
+        @Query("marget") marget: String = "JP"
     ): Call<SpotifyCurrentTrackResponse>
 
     @POST("/v1/playlists/{playlist_id}/tracks")

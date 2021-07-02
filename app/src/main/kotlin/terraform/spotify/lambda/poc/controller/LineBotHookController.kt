@@ -6,6 +6,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
+import terraform.spotify.lambda.poc.model.QuickReplyData
 import terraform.spotify.lambda.poc.service.LineBotService
 import terraform.spotify.lambda.poc.service.SpotifyService
 
@@ -53,7 +54,25 @@ class LineBotHookController(
                 spotifyService.deleteCurrentTrackFromPlaylist(userId, context.logger)
             }
             "register-playlist" -> {
-                spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
+                // プレイリストの取得
+                if (bodyValue != "") {
+                    spotifyService.registerNewPlaylistId(userId, bodyValue, context.logger)
+                } else {
+                    val response = spotifyService.playlsits(userId, context.logger)
+                    lineBotService.sendQuickReplyMessage(
+                        mid = userId,
+                        text = "プレイリストを選んでください",
+                        quickReplyData =
+                        response.items.map {
+                            val uri = it.uri.split(":")[2]
+                            QuickReplyData(
+                                imageUrl = it.images.sortedByDescending { it.height }[0].url,
+                                label = it.name,
+                                messageText = "register-playlist $uri"
+                            )
+                        }
+                    )
+                }
             }
             "add-to-playlist-fulldebug" -> {
                 val userId = text.split(" ")[1]
