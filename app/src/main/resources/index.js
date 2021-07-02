@@ -114,7 +114,7 @@ function decodedSendPost(decoded, code, obj) {
 
 
     // fetch("/post", {
-        fetch("/test/post", {
+    fetch("/test/post", {
         method: "POST",
         headers: {
             "Content-Type": 'application/json'
@@ -132,8 +132,6 @@ function decodedSendPost(decoded, code, obj) {
 
 if (code) {
     initializeLiff(liffId);
-
-
 } else {
     obj.log(`[ifcode_] no code.. 🥺`)
     initializeLiff(liffId);
