@@ -145,7 +145,11 @@ class SpotifyService(
 
         if (body != null) {
             return body
-        } else throw SystemException("[spotifyService] currentTrack failed: code = ${response.code()}")
+        } else throw SystemException(
+            "[spotifyService] currentTrack failed: code = ${response.code()} error = ${
+                response.errorBody()?.string()
+            }"
+        )
 
     }
 
