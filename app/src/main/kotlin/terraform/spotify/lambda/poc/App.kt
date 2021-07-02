@@ -2,10 +2,17 @@ package terraform.spotify.lambda.poc
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.linecorp.bot.model.PushMessage
+import com.linecorp.bot.model.action.Action
+import com.linecorp.bot.model.action.MessageAction
+import com.linecorp.bot.model.message.TextMessage
+import com.linecorp.bot.model.message.quickreply.QuickReply
+import com.linecorp.bot.model.message.quickreply.QuickReplyItem
 import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.exception.SystemException
 import java.io.File
+import java.net.URI
 import java.time.LocalDate
 import java.util.*
 
@@ -26,11 +33,45 @@ class Fun {
             return text
         }
     }
-
 }
 
 fun main() {
-    val objectMapper = ObjectConstructor(isForReal = false).objectMapper
+    val objectConstructor = ObjectConstructor(isForReal = true)
+    val objectMapper = objectConstructor.objectMapper
+
+//    val mid = "U6339db851f0dd06878589cb0e7008294"
+    val mid = "U6acca7c692051138e7a5e4d8e769582c"
+    val response = objectConstructor.lineBotService.client.pushMessage(
+        PushMessage(
+            mid,
+            TextMessage(
+                "hello world", QuickReply.items(
+                    listOf(
+                        QuickReplyItem.builder()
+                            .imageUrl(URI("https://img.icons8.com/material-outlined/24/000000/edit--v3.png"))
+                            .action(MessageAction("プレイリスト1", "テキスト"))
+                            .build(),
+                        QuickReplyItem.builder()
+                            .imageUrl(URI("https://img.icons8.com/material-rounded/24/000000/puzzle.png"))
+                            .action(MessageAction("プレイリスト2", "テキスト"))
+                            .build(),
+                        QuickReplyItem.builder()
+//                            .imageUrl(URI("https://img.icons8.com/material-two-tone/24/000000/link--v3.png"))
+                            .imageUrl(URI("https://mosaic.scdn.co/640/ab67616d0000b27338aae75dc37fb42457866ffdab67616d0000b2733a0bdcd36420a021e2b5dcf8ab67616d0000b273af185c81ec1ba8608c780ca1ab67616d0000b273f6075bd5a7d1ae7d28ad8ab3"))
+                            .action(MessageAction("プレイリスト3", "テキスト"))
+                            .build(),
+                        QuickReplyItem.builder()
+                            .imageUrl(URI("https://img.icons8.com/material-sharp/24/000000/menu--v3.png"))
+                            .action(MessageAction("新規作成", "テキスト"))
+                            .build(),
+                    )
+                )
+            )
+        )
+    ).get()
+
+    println("response: ${objectMapper.writeValueAsString(response)}")
+
 //    val objectMapper = ObjectMapper().apply {
 ////        registerModule(JavaTimeModule())
 //        registerModule(KotlinModule())
@@ -45,18 +86,18 @@ fun main() {
 
 //    println("index html: ${Fun.readFile("index.html")}")
 //    println("index js: ${Fun.readFile("index.js")}")
-    val objectConstructor = ObjectConstructor(isForReal = true)
-    val bear = "${objectConstructor.variables.spotifyClientId}:${objectConstructor.variables.spotifyClientSecret}"
-    val base64ed = Base64.getEncoder().encodeToString(bear.toByteArray())
-    val code =
-        "AQCQmwbF6yNrY92150OrO5yrbKO-lO5vJ6RXZH5j0prjp2S6Ou2UqmJwjMU6L2Ht_ZJPduS-IKuvgNIVJae8D5UcJQo24P3lFEdNNk0h-Jwj4rQmEqklfeOGQMqy4H0kbjwWPybacQk8OfeQXdV_ohuLyaU-NOfwNWGzyDbadCFG9eXWpgdpZxBYP2a8glYGNm9gvXCKejhlO1SOk0cBe_hodif0YLj-ZjQjTxhKHIPuA2Qa1FsctB79gA4fKZE5nW3YLs04Sd-7oPxNaVMWzzMJsh-nDc2s8sbB0QeJyIxLA0Dcyu0MPLaXPCxi-4OZrU4DsCPRXiLxmvbe6Tui9pnduLfn0XrtNmhGDPe1rQ9M9evwV3DtqZ49Z06qSKzsTNjtoUi5N4H6JuRnpxibfQ2uXHoDYqkdjjUoG7VnNUQ1RgqTOricylytfIAHn1pRhhn_bezwO5qHqhYv2q-BY_PTrXUmJOIBqiJKj70MlIV7x-lJlpmkFoL-PsxatkNbEMfSdR5niHFlA2MQGXtaChFJM9mV4C1oZ6_0fA"
-//    val response = objectConstructor.spotifyService.acquireRefreshToken(code)
-    val response = objectConstructor.spotifyApiAuthClient.acquireRefreshToken(
-        authorizationString = "Basic $base64ed",
-        redirectUri = objectConstructor.redirectUrl,
-        code = code
-    ).execute()
-    println("errorbody: ${response.errorBody()?.string()}")
-    println("response: $response")
+//    val objectConstructor = ObjectConstructor(isForReal = true)
+//    val bear = "${objectConstructor.variables.spotifyClientId}:${objectConstructor.variables.spotifyClientSecret}"
+//    val base64ed = Base64.getEncoder().encodeToString(bear.toByteArray())
+//    val code =
+//        "AQCQmwbF6yNrY92150OrO5yrbKO-lO5vJ6RXZH5j0prjp2S6Ou2UqmJwjMU6L2Ht_ZJPduS-IKuvgNIVJae8D5UcJQo24P3lFEdNNk0h-Jwj4rQmEqklfeOGQMqy4H0kbjwWPybacQk8OfeQXdV_ohuLyaU-NOfwNWGzyDbadCFG9eXWpgdpZxBYP2a8glYGNm9gvXCKejhlO1SOk0cBe_hodif0YLj-ZjQjTxhKHIPuA2Qa1FsctB79gA4fKZE5nW3YLs04Sd-7oPxNaVMWzzMJsh-nDc2s8sbB0QeJyIxLA0Dcyu0MPLaXPCxi-4OZrU4DsCPRXiLxmvbe6Tui9pnduLfn0XrtNmhGDPe1rQ9M9evwV3DtqZ49Z06qSKzsTNjtoUi5N4H6JuRnpxibfQ2uXHoDYqkdjjUoG7VnNUQ1RgqTOricylytfIAHn1pRhhn_bezwO5qHqhYv2q-BY_PTrXUmJOIBqiJKj70MlIV7x-lJlpmkFoL-PsxatkNbEMfSdR5niHFlA2MQGXtaChFJM9mV4C1oZ6_0fA"
+////    val response = objectConstructor.spotifyService.acquireRefreshToken(code)
+//    val response = objectConstructor.spotifyApiAuthClient.acquireRefreshToken(
+//        authorizationString = "Basic $base64ed",
+//        redirectUri = objectConstructor.redirectUrl,
+//        code = code
+//    ).execute()
+//    println("errorbody: ${response.errorBody()?.string()}")
+//    println("response: $response")
 }
 
