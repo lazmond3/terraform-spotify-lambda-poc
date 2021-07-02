@@ -14,8 +14,12 @@ import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.service.LineBotService
 import terraform.spotify.lambda.poc.service.SpotifyService
 import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import terraform.spotify.lambda.poc.variables.EnvironmentVariablesInterface
+import terraform.spotify.lambda.poc.variables.TestEnvironmentVariables
 
-class ObjectConstructor {
+class ObjectConstructor(
+    val isForReal: Boolean
+) {
     val objectMapper = ObjectMapper().apply {
         registerModule(JavaTimeModule())
         registerModule(KotlinModule())
@@ -24,9 +28,15 @@ class ObjectConstructor {
     val tableName = "spotify-poc"
     val trackTableName = "spotify-dynamo-music"
     val ddb = AmazonDynamoDBClientBuilder.defaultClient()
-    val variables = EnvironmentVariables()
+    val variables: EnvironmentVariablesInterface =
+        if (isForReal) {
+            EnvironmentVariables()
+        } else {
+            TestEnvironmentVariables()
+        }
     val baseUrl = "https://accounts.spotify.com"
     val apiBaseUrl = "https://api.spotify.com"
+    val redirectUrl = "https://liff.line.me/1656158895-Rygo23DL"
 
     val retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
@@ -56,7 +66,8 @@ class ObjectConstructor {
         variables = variables,
         userTokenDynamoDbMapper = userTokenDynamoDBMapper,
         spotifyTrackDynamoDbMapper = spotifyTrackDynamoDbMapper,
-        lineBotService = lineBotService
+        lineBotService = lineBotService,
+        objectConstructor = this
     )
 
     val lineBotHookController = LineBotHookController(

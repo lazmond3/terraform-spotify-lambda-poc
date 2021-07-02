@@ -53,6 +53,8 @@ dependencies {
     // line bot
     implementation("com.linecorp.bot:line-bot-api-client:4.3.0")
 
+    // mockk
+    testImplementation("io.mockk:mockk:1.10.6")
 }
 
 application {

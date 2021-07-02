@@ -3,26 +3,30 @@ package terraform.spotify.lambda.poc.service
 import com.amazonaws.services.lambda.runtime.LambdaLogger
 import terraform.spotify.lambda.poc.client.SpotifyApiAuthClient
 import terraform.spotify.lambda.poc.client.SpotifyApiClient
+import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.entity.Token
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.request.AddToPlaylistRequest
 import terraform.spotify.lambda.poc.request.DeleteFromPlaylistRequest
+import terraform.spotify.lambda.poc.response.spotify.AcquireRefreshTokenResponse
+import terraform.spotify.lambda.poc.response.spotify.PlaylistResponse
 import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
-import terraform.spotify.lambda.poc.variables.EnvironmentVariables
+import terraform.spotify.lambda.poc.variables.EnvironmentVariablesInterface
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 
 class SpotifyService(
-    val variables: EnvironmentVariables,
+    val variables: EnvironmentVariablesInterface,
     val spotifyApiAuthClient: SpotifyApiAuthClient,
     val spotifyApiClient: SpotifyApiClient,
     val userTokenDynamoDbMapper: UserTokenDynamoDbMapper,
     val spotifyTrackDynamoDbMapper: SpotifyTrackDynamoDbMapper,
-    val lineBotService: LineBotService
+    val lineBotService: LineBotService,
+    val objectConstructor: ObjectConstructor
 ) {
     fun registerNewPlaylistId(userId: String, playlistId: String, logger: LambdaLogger) {
         val userToken = userTokenDynamoDbMapper.readRowOrNull(userId, logger)
@@ -142,8 +146,28 @@ class SpotifyService(
 
         if (body != null) {
             return body
-        } else throw SystemException("[spotifyService] currentTrack failed: code = ${response.code()}")
+        } else throw SystemException(
+            "[spotifyService] currentTrack failed: code = ${response.code()} error = ${
+                response.errorBody()?.string()
+            }"
+        )
+    }
 
+    fun playlsits(userId: String, logger: LambdaLogger): PlaylistResponse {
+        val token: String = readAccessTokenOrUpdated(userId, logger)
+        val response = spotifyApiClient.getPlaylists(
+            authorizationString = "Bearer $token",
+            limit = 3
+        ).execute()
+        val body = response.body()
+
+        if (body != null) {
+            return body
+        } else throw SystemException(
+            "[spotifyService] playlists failed: code = ${response.code()} error = ${
+                response.errorBody()?.string()
+            }"
+        )
     }
 
     private fun isAlreadyAdded(playlistId: String, trackId: String): Boolean {
@@ -207,6 +231,24 @@ class SpotifyService(
         )
         val timeString = now.format(DateTimeFormatter.ISO_DATE_TIME)
         return timeString
+    }
+
+    fun acquireRefreshToken(code: String): AcquireRefreshTokenResponse {
+        val bear = "${variables.spotifyClientId}:${variables.spotifyClientSecret}"
+        val base64ed = Base64.getEncoder().encodeToString(bear.toByteArray())
+        val response = spotifyApiAuthClient.acquireRefreshToken(
+            authorizationString = "Basic $base64ed",
+            redirectUri = objectConstructor.redirectUrl,
+            code = code
+        ).execute()
+        val body = response.body()
+        if (response.isSuccessful && body != null) {
+            return body
+        } else throw SystemException(
+            "[spotify-service] acquireRefreshToken failed code: ${response.code()} body: ${
+                response.errorBody()?.string()
+            }"
+        )
     }
 
     fun refreshToken(refreshToken: String, logger: LambdaLogger): Token {

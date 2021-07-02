@@ -8,42 +8,17 @@
 
 <body>
     <h1>hello world</h1>
-    <button id="liffLoginButton">
-        liffLogin
-    </button>
-    <button id="getAccessToken">
-        getAccessToken
-    </button>
-    <div>
-        <label>
-            url
-            <textarea id="url"></textarea>
-        </label>
-    </div>
-    <div>
-        <lable>
-            access token field:
-            <textarea id="accessTokenField"></textarea>
-            <!-- <input id="accessTokenField" > -->
-        </lable>
-    </div>
-    <div>
-        <lable>
-            uid:
-            <textarea id="uid"></textarea>
-            <!-- <input id="accessTokenField" > -->
-        </lable>
-    </div>
-    <div>
-        <lable>
-            decodedIdToken:
-            <textarea id="decoded"></textarea>
-            <!-- <input id="accessTokenField" > -->
-        </lable>
-    </div>
+
+    <div><label for="t">
+            console:
+            <textarea name="t" id="t" cols="30" rows="10"></textarea>
+        </label></div>
+    <a
+        href="https://accounts.spotify.com/authorize?response_type=code&client_id=fa8da1cfbf9a40a4916307246b7f7222&scope=user-read-private%20user-read-email%20user-modify-playback-state%20playlist-read-private%20user-read-recently-played%20user-top-read%20user-library-read%20user-read-playback-position%20user-library-modify%20user-follow-read%20playlist-modify-public%20playlist-modify-private%20user-read-playback-state%20user-read-currently-playing&redirect_uri=https%3A%2F%2Fliff%2Eline%2Eme%2F1656158895%2DRygo23DL">spotify</a>
 
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script src="index.js"></script>
+    <script src="test/index.js"></script>
+    <!-- <script src="index.js"></script> -->
 </body>
 
 </html>

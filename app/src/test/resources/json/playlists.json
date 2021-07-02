@@ -1,0 +1,92 @@
+{
+  "href": "https://api.spotify.com/v1/users/213svyj7idwcljibzb2eqadoi/playlists?offset=0&limit=2",
+  "items": [
+    {
+      "collaborative": false,
+      "description": "",
+      "external_urls": {
+        "spotify": "https://open.spotify.com/playlist/2eR0YK4jBO4ol03Z0FzsaU"
+      },
+      "href": "https://api.spotify.com/v1/playlists/2eR0YK4jBO4ol03Z0FzsaU",
+      "id": "2eR0YK4jBO4ol03Z0FzsaU",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://mosaic.scdn.co/640/ab67616d0000b27338aae75dc37fb42457866ffdab67616d0000b2733a0bdcd36420a021e2b5dcf8ab67616d0000b273af185c81ec1ba8608c780ca1ab67616d0000b273f6075bd5a7d1ae7d28ad8ab3",
+          "width": 640
+        },
+        {
+          "height": 300,
+          "url": "https://mosaic.scdn.co/300/ab67616d0000b27338aae75dc37fb42457866ffdab67616d0000b2733a0bdcd36420a021e2b5dcf8ab67616d0000b273af185c81ec1ba8608c780ca1ab67616d0000b273f6075bd5a7d1ae7d28ad8ab3",
+          "width": 300
+        },
+        {
+          "height": 60,
+          "url": "https://mosaic.scdn.co/60/ab67616d0000b27338aae75dc37fb42457866ffdab67616d0000b2733a0bdcd36420a021e2b5dcf8ab67616d0000b273af185c81ec1ba8608c780ca1ab67616d0000b273f6075bd5a7d1ae7d28ad8ab3",
+          "width": 60
+        }
+      ],
+      "name": "202106",
+      "owner": {
+        "display_name": "Ryosuke Kazami",
+        "external_urls": {
+          "spotify": "https://open.spotify.com/user/213svyj7idwcljibzb2eqadoi"
+        },
+        "href": "https://api.spotify.com/v1/users/213svyj7idwcljibzb2eqadoi",
+        "id": "213svyj7idwcljibzb2eqadoi",
+        "type": "user",
+        "uri": "spotify:user:213svyj7idwcljibzb2eqadoi"
+      },
+      "primary_color": null,
+      "public": true,
+      "snapshot_id": "MTA1LGE5ZjIxM2I2ZDZmYzRiZmNkNjQyMzdjOGEyZjQwYjc5NGY5YWM1YTY=",
+      "tracks": {
+        "href": "https://api.spotify.com/v1/playlists/2eR0YK4jBO4ol03Z0FzsaU/tracks",
+        "total": 60
+      },
+      "type": "playlist",
+      "uri": "spotify:playlist:2eR0YK4jBO4ol03Z0FzsaU"
+    },
+    {
+      "collaborative": false,
+      "description": "",
+      "external_urls": {
+        "spotify": "https://open.spotify.com/playlist/00yXX5SswX6xIlUuyPz9P2"
+      },
+      "href": "https://api.spotify.com/v1/playlists/00yXX5SswX6xIlUuyPz9P2",
+      "id": "00yXX5SswX6xIlUuyPz9P2",
+      "images": [
+        {
+          "height": 640,
+          "url": "https://i.scdn.co/image/ab67616d0000b27318d958e4c35bc66c0afeb685",
+          "width": 640
+        }
+      ],
+      "name": "ヒルメモ",
+      "owner": {
+        "display_name": "Ryosuke Kazami",
+        "external_urls": {
+          "spotify": "https://open.spotify.com/user/213svyj7idwcljibzb2eqadoi"
+        },
+        "href": "https://api.spotify.com/v1/users/213svyj7idwcljibzb2eqadoi",
+        "id": "213svyj7idwcljibzb2eqadoi",
+        "type": "user",
+        "uri": "spotify:user:213svyj7idwcljibzb2eqadoi"
+      },
+      "primary_color": null,
+      "public": true,
+      "snapshot_id": "Myw3NTE2NDBjYmM1OTM0NjUyYWIyMzJlMDc1NjM4OTE5MGUzYjg0ZWVl",
+      "tracks": {
+        "href": "https://api.spotify.com/v1/playlists/00yXX5SswX6xIlUuyPz9P2/tracks",
+        "total": 1
+      },
+      "type": "playlist",
+      "uri": "spotify:playlist:00yXX5SswX6xIlUuyPz9P2"
+    }
+  ],
+  "limit": 2,
+  "next": "https://api.spotify.com/v1/users/213svyj7idwcljibzb2eqadoi/playlists?offset=2&limit=2",
+  "offset": 0,
+  "previous": null,
+  "total": 84
+}
