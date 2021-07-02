@@ -32,9 +32,9 @@ function initializeLiff(myLiffId) {
             obj.log(`[liff init] decoded: ${decoded}`)
             const idToken = liff.getDecodedIDToken();
 
-            document.getElementById("decoded").textContent = JSON.stringify(idToken);
-            document.getElementById("uid").textContent = idToken.sub
-            document.getElementById("url").textContent = location.href;
+            // document.getElementById("decoded").textContent = JSON.stringify(idToken);
+            // document.getElementById("uid").textContent = idToken.sub
+            // document.getElementById("url").textContent = location.href;
 
             // 1. init に成功して、データを飛ばして mode to reg にできたら、spotify にリダイレクトする。
             // [fetch API]
