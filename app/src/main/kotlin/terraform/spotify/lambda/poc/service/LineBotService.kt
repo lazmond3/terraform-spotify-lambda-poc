@@ -3,7 +3,12 @@ package terraform.spotify.lambda.poc.service
 import com.linecorp.bot.client.LineMessagingClient
 import com.linecorp.bot.model.PushMessage
 import com.linecorp.bot.model.ReplyMessage
+import com.linecorp.bot.model.action.MessageAction
 import com.linecorp.bot.model.message.TextMessage
+import com.linecorp.bot.model.message.quickreply.QuickReply
+import com.linecorp.bot.model.message.quickreply.QuickReplyItem
+import terraform.spotify.lambda.poc.model.QuickReplyData
+import java.net.URI
 
 class LineBotService(
     val token: String
@@ -23,4 +28,22 @@ class LineBotService(
             TextMessage(text)
         )
     ).get()
+
+    fun sendQuickReplyMessage(mid: String, text: String, quickReplyData: List<QuickReplyData>) = client.pushMessage(
+        PushMessage(
+            mid,
+            TextMessage(
+                text,
+                QuickReply.items(
+                    quickReplyData.map {
+                        QuickReplyItem.builder()
+                            .imageUrl(URI(it.imageUrl))
+                            .action(MessageAction(it.label, it.messageText))
+                            .build()
+                    }
+                )
+            )
+        )
+    )
+
 }
