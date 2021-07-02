@@ -66,8 +66,14 @@ class LineBotHookController(
                         quickReplyData =
                         response.items.map {
                             val uri = it.uri.split(":")[2]
+
+                            val imageUrl = if (it.images.isNotEmpty()) {
+                                it.images.sortedByDescending { it.height }[0].url
+                            } else {
+                                "https://img.icons8.com/material-outlined/24/000000/menu--v3.png"
+                            }
                             QuickReplyData(
-                                imageUrl = it.images.sortedByDescending { it.height }[0].url,
+                                imageUrl = imageUrl,
                                 label = it.name,
                                 messageText = "register-playlist $uri"
                             )
