@@ -182,6 +182,26 @@ class SpotifyApiClientTest {
         }
     }
 
+    @Test
+    fun playlist() {
+        val mockResponse = mockResponseFromJson(200, "json/playlists.json")
+        mockWebServer.enqueue(mockResponse)
+        val response = spotifyApiClient.getPlaylists(
+            authorizationString = "",
+            limit = 0
+        )
+        response.execute().let {
+            assert(it.isSuccessful)
+            assert(it.code() == 200)
+            val body = it.body()
+            assert(body != null)
+            if (body != null) {
+                assert(body.items.size == 2)
+                assert(body.href == "https://api.spotify.com/v1/users/213svyj7idwcljibzb2eqadoi/playlists?offset=0&limit=2")
+            }
+        }
+    }
+
     private fun mockResponseFromJson(code: Int, resourcePath: String): MockResponse {
 
         val fullPath = javaClass.classLoader.getResource(resourcePath)?.path
