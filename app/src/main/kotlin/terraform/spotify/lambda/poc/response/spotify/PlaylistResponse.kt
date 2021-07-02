@@ -1,11 +1,13 @@
 package terraform.spotify.lambda.poc.response.spotify
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class PlaylistResponse(
     val href: String,
     val items: List<ReadPlaylistItem>,
@@ -19,6 +21,7 @@ data class PlaylistResponse(
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItem(
     val collaborative: Boolean,
     val description: String,
@@ -38,6 +41,7 @@ data class ReadPlaylistItem(
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItemImage(
     val height: Int,
     val url: String,
@@ -46,6 +50,7 @@ data class ReadPlaylistItemImage(
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItemOwner(
     val displayName: String,
     val externalUrls: SpotifyCurrentTrackExternalUrl,
@@ -57,6 +62,7 @@ data class ReadPlaylistItemOwner(
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItemTrack(
     val href: String,
     val total: Int
