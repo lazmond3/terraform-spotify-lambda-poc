@@ -5,16 +5,59 @@
     <meta charset="UTF-8">
     <title>Title</title>
 </head>
+<style>
+    #arenkei {
+        padding-top: 1.3em;
+        padding-bottom: 1.4em;
+        /* padding: 16px 14px 18px; */
+        color: #ffffff;
+        background-color: rgb(61, 176, 82);
+
+        /* font-size: 14px; */
+        font-size: 4em;
+        line-height: 1;
+        border-radius: 500px;
+        transition-property: background-color, border-color, color, box-shadow, filter;
+        transition-duration: .3s;
+        border-width: 0;
+        letter-spacing: 2px;
+        min-width: 160px;
+        text-transform: uppercase;
+        white-space: normal;
+
+        display: block;
+        /* width: 100%; */
+
+        /* vertical-align: middle; */
+        margin-bottom: 0;
+        font-weight: 700;
+        text-align: center;
+        touch-action: manipulation;
+        cursor: pointer;
+        background-image: none;
+        border: 1px solid transparent;
+        user-select: none;
+
+        text-decoration: none;
+        box-sizing: border-box;
+    }
+</style>
 
 <body>
-    <h1>hello world</h1>
+    <div style="margin-top: 300px">
+        <h1>Spotify Line</h1>
+    </div>
 
-    <div><label for="t">
+    <!-- <div><label for="t">
             console:
             <textarea name="t" id="t" cols="30" rows="10"></textarea>
-        </label></div>
-    <a
-        href="https://accounts.spotify.com/authorize?response_type=code&client_id=fa8da1cfbf9a40a4916307246b7f7222&scope=user-read-private%20user-read-email%20user-modify-playback-state%20playlist-read-private%20user-read-recently-played%20user-top-read%20user-library-read%20user-read-playback-position%20user-library-modify%20user-follow-read%20playlist-modify-public%20playlist-modify-private%20user-read-playback-state%20user-read-currently-playing&redirect_uri=https%3A%2F%2Fliff%2Eline%2Eme%2F1656158895%2DRygo23DL">spotify</a>
+        </label></div> -->
+    <div>
+        <a id="arenkei"
+            href="https://accounts.spotify.com/authorize?response_type=code&client_id=fa8da1cfbf9a40a4916307246b7f7222&scope=user-read-private%20user-read-email%20user-modify-playback-state%20playlist-read-private%20user-read-recently-played%20user-top-read%20user-library-read%20user-read-playback-position%20user-library-modify%20user-follow-read%20playlist-modify-public%20playlist-modify-private%20user-read-playback-state%20user-read-currently-playing&redirect_uri=https%3A%2F%2Fliff%2Eline%2Eme%2F1656158895%2DRygo23DL">
+            spotifyと連携する
+        </a>
+    </div>
 
     <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script src="test/index.js"></script>
