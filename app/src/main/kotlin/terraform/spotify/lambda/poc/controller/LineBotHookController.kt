@@ -17,26 +17,12 @@ class LineBotHookController(
         val userTokenDynamoDBMapper: UserTokenDynamoDbMapper,
         val spotifyService: SpotifyService
 ) {
-
-
     fun handle(inputEvent: AwsInputEvent, context: Context): APIGatewayProxyResponseEvent {
-        val headers = mapOf(
-                "Content-Type" to "text/html"
-        )
-
         inputEvent.events.forEach {
             val message = "[received] ${it.message.text}"
             lineBotService.replyToMessage(it.replyToken, message)
         }
-        val replyToken = inputEvent.events[0].replyToken
-        // assert 入れたい
         val text = inputEvent.events[0].message.text
-
-        val head = text.split(" ")[0]
-        val bodyValue = if (text.split(" ").size >= 2) {
-            text.split(" ")[1]
-        } else ""
-        // TODO: これ以降の部分を 別の関数に切り出したい
         val userId = inputEvent.events[0].source.userId
 
         return handleMessage(isForSpring = false,
@@ -65,14 +51,15 @@ class LineBotHookController(
                         logger = logger
                 )
             }
+            "a3", "a",
             "add-current" -> {
-                lineBotService.sendMessage(userId, text = "add-current の send message test")
                 spotifyService.addCurrentTrackToPlaylist(userId, logger)
             }
+            "d3", "d",
             "delete-current" -> {
-                lineBotService.sendMessage(userId, text = "delete-current の send message test")
                 spotifyService.deleteCurrentTrackFromPlaylist(userId, logger)
             }
+            "プレイリスト登録",
             "register-playlist" -> {
                 // プレイリストの取得
                 if (bodyValue != "") {
@@ -99,53 +86,6 @@ class LineBotHookController(
                                 )
                             }
                     )
-                }
-            }
-            "add-to-playlist-fulldebug" -> {
-                val userId = text.split(" ")[1]
-                val playlistId = text.split(" ")[2]
-                val trackId = text.split(" ")[3]
-                registerTrackIdToPlaylist(userId, playlistId, trackId, logger)
-            }
-            "add-to-playlist-debug" -> {
-                val playlistId = text.split(" ")[1]
-                val trackId = text.split(" ")[2]
-                registerTrackIdToPlaylist(userId, playlistId, trackId, logger)
-            }
-            "add-to-playlist" -> {
-                // userId から playlistId を取得する
-                val token = userTokenDynamoDBMapper.readRowOrNull(
-                        userId = userId,
-                        logger
-                )
-                if (token != null) {
-                    val playlistId = token.playlistId
-                    if (playlistId == null) {
-                        lineBotService.sendMessage(userId,
-                                "token is null for userId: $userId"
-                        )
-                    } else {
-                        val trackId = text.split(" ")[1]
-                        registerTrackIdToPlaylist(userId, playlistId, trackId, logger)
-                    }
-                } else {
-                    lineBotService.sendMessage(
-                            userId,
-                            "token is null for userId: $userId"
-                    )
-                }
-            }
-            "delete-from-playlist-fulldebug" -> {
-                val userId = text.split(" ")[1]
-                val playlistId = text.split(" ")[2]
-                val trackId = text.split(" ")[3]
-
-                val result = spotifyDbMapper.readRowOrNull(playlistId, trackId, logger)
-                if (result != null) {
-                    logger.log("[delete debug log] the track $trackId is already registered: ")
-                    spotifyDbMapper.delete(playlistId, trackId, logger)
-                } else {
-                    logger.log("[delete debug log] the track $trackId is not registered: ")
                 }
             }
         }
