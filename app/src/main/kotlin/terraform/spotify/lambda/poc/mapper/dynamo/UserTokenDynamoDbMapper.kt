@@ -3,13 +3,13 @@ package terraform.spotify.lambda.poc.mapper.dynamo
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.*
-import com.amazonaws.services.lambda.runtime.LambdaLogger
 import terraform.spotify.lambda.poc.entity.UserToken
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
 import java.util.*
 import kotlin.system.exitProcess
+import terraform.spotify.lambda.poc.`interface`.LoggerInterface
 
 class UserTokenDynamoDbMapper(
     val tableName: String,
@@ -20,14 +20,14 @@ class UserTokenDynamoDbMapper(
     // もし expire してたら -> spotify で更新処理かけたい(依存大丈夫？) 新規登録して それを返す
     // これは spotify service でやること
     // もし expire してなかったら
-    fun readTokenRowOrNull(userId: String, logger: LambdaLogger): UserToken? {
+    fun readTokenRowOrNull(userId: String, logger: LoggerInterface): UserToken? {
         val r = readRow(userId, logger)?.item
         return r?.let {
             UserToken(it)
         }
     }
 
-    fun readRowOrNull(userId: String, logger: LambdaLogger): UserToken? {
+    fun readRowOrNull(userId: String, logger: LoggerInterface): UserToken? {
         val r = readRow(userId, logger)?.item
         return r?.let {
             UserToken(it)
@@ -36,7 +36,7 @@ class UserTokenDynamoDbMapper(
 
 
     // トークン更新したらこちらを使う
-    fun updateWithRefreshedToken(userId: String, newAccessToken: String, expiresIn: Int, logger: LambdaLogger) {
+    fun updateWithRefreshedToken(userId: String, newAccessToken: String, expiresIn: Int, logger: LoggerInterface) {
         val timeString = makeNowTimeString()
 
         val userToken = UserToken(
@@ -85,7 +85,7 @@ class UserTokenDynamoDbMapper(
     // 中間。読み出すときはこれを使う。
     // この結果がなかったらregister する必要があるし（でもエラーメッセージを返す)
     // この結果があっても、expiresIn がだめだったら更新処理をかける必要がある。
-    private fun readRow(userId: String, logger: LambdaLogger): GetItemResult? {
+    private fun readRow(userId: String, logger: LoggerInterface): GetItemResult? {
         val result = dbClient.getItem(
             GetItemRequest()
                 .withTableName(tableName)
@@ -101,7 +101,7 @@ class UserTokenDynamoDbMapper(
     }
 
     // 検証 or LIFF で登録するエンドポイント
-    fun registerRefreshToken(userId: String, refreshToken: String, logger: LambdaLogger) {
+    fun registerRefreshToken(userId: String, refreshToken: String, logger: LoggerInterface) {
 
         val item: Map<String, AttributeValue> = mapOf(
             "UserId" to AttributeValue(userId),

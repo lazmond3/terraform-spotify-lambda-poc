@@ -4,18 +4,25 @@ import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
+import java.io.File
+import terraform.spotify.lambda.poc.`interface`.LoggerInterface
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.request.PostLineUserDataWithCodeRequest
-import java.io.File
 
 
 class InnerHandler(
-    val objectConstructor: ObjectConstructor
+        val objectConstructor: ObjectConstructor
 ) : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     override fun handleRequest(input: APIGatewayProxyRequestEvent, context: Context): APIGatewayProxyResponseEvent {
-        val logger = context.logger
+        val logger = context.logger.let {
+            object : LoggerInterface {
+                override fun log(message: String) {
+                    it.log(message)
+                }
+            }
+        }
         val objectMapper = objectConstructor.objectMapper
 
         logger.log("------------------------------------------------------------------")
@@ -61,10 +68,10 @@ class InnerHandler(
                 "OPTIONS" -> { // 今回追加した preflight
                     logger.log("[debug option] post に 届いた")
                     val headers = mapOf(
-                        "Cache-Control" to "no-store, no-chache",
-                        "Access-Control-Allow-Origin" to "*",
-                        "Access-Control-Allow-Methods" to "POST, GET, OPTIONS, DELETE",
-                        "Access-Control-Max-Age" to "86400"
+                            "Cache-Control" to "no-store, no-chache",
+                            "Access-Control-Allow-Origin" to "*",
+                            "Access-Control-Allow-Methods" to "POST, GET, OPTIONS, DELETE",
+                            "Access-Control-Max-Age" to "86400"
                     )
                     logger.log("[debug option] return 直前")
 
@@ -76,7 +83,7 @@ class InnerHandler(
                 }
                 "POST" -> {
                     val headers = mapOf<String, String>(
-                        "Cache-Control" to "no-store, no-chache"
+                            "Cache-Control" to "no-store, no-chache"
                     )
                     val postRequest = objectMapper.readValue(input.body, PostLineUserDataWithCodeRequest::class.java)
                     val userId = postRequest.sub
@@ -90,15 +97,15 @@ class InnerHandler(
                     val userToken = objectConstructor.userTokenDynamoDBMapper.readRowOrNull(userId, logger)
                     if (userToken != null) {
                         objectConstructor.userTokenDynamoDBMapper.update(
-                            userToken.copy(
-                                refreshToken = refreshToken
-                            )
+                                userToken.copy(
+                                        refreshToken = refreshToken
+                                )
                         )
                     } else {
                         objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
-                            userId = userId,
-                            refreshToken = refreshToken,
-                            logger = logger
+                                userId = userId,
+                                refreshToken = refreshToken,
+                                logger = logger
                         )
                     }
 
@@ -121,8 +128,8 @@ class InnerHandler(
             }
         } else if (input.path == "/index.html") {
             val headers = mapOf(
-                "Cache-Control" to "no-store, no-chache",
-                "Content-Type" to "text/html"
+                    "Cache-Control" to "no-store, no-chache",
+                    "Content-Type" to "text/html"
             )
             APIGatewayProxyResponseEvent().apply {
                 isBase64Encoded = false
@@ -133,8 +140,8 @@ class InnerHandler(
             }
         } else if (input.path == "/index.js") {
             val headers = mapOf(
-                "Cache-Control" to "no-store, no-chache",
-                "Content-Type" to "text/javascript"
+                    "Cache-Control" to "no-store, no-chache",
+                    "Content-Type" to "text/javascript"
             )
             APIGatewayProxyResponseEvent().apply {
                 isBase64Encoded = false
@@ -145,8 +152,8 @@ class InnerHandler(
             }
         } else if (input.path == "/") {
             val headers = mapOf(
-                "Cache-Control" to "no-store, no-chache",
-                "Content-Type" to "text/html"
+                    "Cache-Control" to "no-store, no-chache",
+                    "Content-Type" to "text/html"
             )
             APIGatewayProxyResponseEvent().apply {
                 isBase64Encoded = false
@@ -156,7 +163,7 @@ class InnerHandler(
             }
         } else if (input.path == "/test") {
             val headers = mapOf(
-                "Content-Type" to "text/html"
+                    "Content-Type" to "text/html"
             )
             APIGatewayProxyResponseEvent().apply {
                 isBase64Encoded = false
@@ -168,7 +175,7 @@ class InnerHandler(
             }
         } else {
             val headers = mapOf(
-                "Content-Type" to "text/html"
+                    "Content-Type" to "text/html"
             )
             APIGatewayProxyResponseEvent().apply {
                 isBase64Encoded = false
@@ -183,7 +190,7 @@ class InnerHandler(
 
     private fun readFileAsString(resourcePath: String): String {
         val fullPath = javaClass.classLoader.getResource(resourcePath)?.path
-            ?: throw SystemException("Invalid resource path: $resourcePath")
+                ?: throw SystemException("Invalid resource path: $resourcePath")
 
         val reader = File(fullPath).bufferedReader()
         val text: String = reader.use { it.readText() }

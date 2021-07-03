@@ -3,24 +3,24 @@ package terraform.spotify.lambda.poc.mapper.dynamo
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.*
-import com.amazonaws.services.lambda.runtime.LambdaLogger
-import terraform.spotify.lambda.poc.entity.PlaylistTrack
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Calendar
 import kotlin.system.exitProcess
+import terraform.spotify.lambda.poc.`interface`.LoggerInterface
+import terraform.spotify.lambda.poc.entity.PlaylistTrack
 
 class SpotifyTrackDynamoDbMapper(
     val tableName: String,
     val gsiIndexName: String,
     val dbClient: AmazonDynamoDB,
 ) {
-    fun readRowOrNull(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? =
+    fun readRowOrNull(playlistId: String, trackId: String, logger: LoggerInterface): PlaylistTrack? =
         readRow(playlistId, trackId)
 
 
-    fun delete(playlistId: String, trackId: String, logger: LambdaLogger?) {
+    fun delete(playlistId: String, trackId: String, logger: LoggerInterface?) {
         val result = dbClient.deleteItem(
             DeleteItemRequest()
                 .withTableName(tableName)
@@ -36,7 +36,7 @@ class SpotifyTrackDynamoDbMapper(
         logger?.log("[delete] result: $result")
     }
 
-    fun create(userId: String, playlistId: String, trackId: String, logger: LambdaLogger) {
+    fun create(userId: String, playlistId: String, trackId: String, logger: LoggerInterface) {
         val now = LocalDateTime.now()
         val addedAt = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         val item: Map<String, AttributeValue> = mapOf(

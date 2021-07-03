@@ -22,6 +22,8 @@ import java.time.LocalDate
 import java.util.*
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication
+import org.springframework.context.annotation.Bean
+import org.springframework.context.annotation.Configuration
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
@@ -29,11 +31,20 @@ data class Data(
         val localDate: LocalDate
 )
 
+@Configuration
+class Config {
+    @Bean
+    fun isForReal() = true
+}
+
 @SpringBootApplication
 @LineMessageHandler
-class Application {
+class Application(
+        val objectConstructor: ObjectConstructor
+) {
     @EventMapping
     fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): TextMessage {
+
         println("event: $event")
         return TextMessage(event.message.text)
     }
