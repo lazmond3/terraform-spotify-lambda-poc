@@ -70,8 +70,7 @@ dependencies {
 
 
     // kotlin logging
-//    implementation("org.slf4j:slf4j-simple:1.7.29")
-//    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
 }
 
 application {
@@ -97,7 +96,7 @@ tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
         jvmTarget = "11"
         javaParameters = true
         freeCompilerArgs = listOf(
-            "-Xjsr305=strict"
+                "-Xjsr305=strict"
         )
     }
 }

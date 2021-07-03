@@ -5,9 +5,11 @@ import com.linecorp.bot.model.event.message.TextMessageContent
 import com.linecorp.bot.model.message.TextMessage
 import com.linecorp.bot.spring.boot.annotation.EventMapping
 import com.linecorp.bot.spring.boot.annotation.LineMessageHandler
+import mu.KotlinLogging
 import terraform.spotify.lambda.poc.`interface`.LoggerInterface
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
 
+private val logger = KotlinLogging.logger {}
 
 @LineMessageHandler
 class LineBotMessageSpringController(
@@ -24,12 +26,13 @@ class LineBotMessageSpringController(
                 logger =
                 object : LoggerInterface {
                     override fun log(message: String) {
-                        println("[pseudo-logback] $message")
+//                        println("[pseudo-logback] $message")
+                        logger.info { message }
                     }
                 }
 
         )
-        println("event: $event")
+        logger.info { "event: $event" }
         return TextMessage(event.message.text)
     }
 }
