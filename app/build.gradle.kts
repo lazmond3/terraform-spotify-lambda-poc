@@ -13,6 +13,10 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+
+//    id("org.springframework.boot") version "2.5.2"
+//    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+//    kotlin("plugin.spring") version "1.5.20"
 }
 
 repositories {
@@ -52,9 +56,16 @@ dependencies {
 
     // line bot
     implementation("com.linecorp.bot:line-bot-api-client:4.3.0")
+//    implementation("com.linecorp.bot:line-bot-spring-boot:4.3.0")
 
     // mockk
     testImplementation("io.mockk:mockk:1.10.6")
+
+//    implementation("org.springframework.boot:spring-boot-starter-web")
+//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+//    implementation("org.jetbrains.kotlin:kotlin-reflect")
+//    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+//    testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
 
 application {
