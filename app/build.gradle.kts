@@ -14,9 +14,9 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     application
 
-//    id("org.springframework.boot") version "2.5.2"
-//    id("io.spring.dependency-management") version "1.0.11.RELEASE"
-//    kotlin("plugin.spring") version "1.5.20"
+    id("org.springframework.boot") version "2.5.2"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    kotlin("plugin.spring") version "1.5.20"
 }
 
 repositories {
@@ -58,8 +58,10 @@ dependencies {
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
 
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    implementation("com.squareup.okhttp3:mockwebserver:4.9.0")
+//    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
+//    implementation("com.squareup.okhttp3:mockwebserver:4.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
+    implementation("com.squareup.okhttp3:mockwebserver:3.14.9")
 
     // line bot
     implementation("com.linecorp.bot:line-bot-api-client:4.3.0")

@@ -80,8 +80,8 @@ class SpotifyApiClientTest {
                         val request = chain.request()
                         val reqString = Buffer().let {
                             val nReq = request.newBuilder().build()
-                            nReq.body?.writeTo(it)
-                            it.readUtf8()
+//                            nReq.body?.writeTo(it)
+//                            it.readUtf8()
                         }
                         println("[debug body] : $reqString")
 //                        println("[debug ok intercept] ${request.toString()}")
@@ -124,8 +124,8 @@ class SpotifyApiClientTest {
                         val request = chain.request()
                         val reqString = Buffer().let {
                             val nReq = request.newBuilder().build()
-                            nReq.body?.writeTo(it)
-                            it.readUtf8()
+//                            nReq.body?.writeTo(it)
+//                            it.readUtf8()
                         }
                         println("[debug body] : $reqString")
                         println("[debug ok intercept] ${request.toString()}")
