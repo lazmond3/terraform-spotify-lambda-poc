@@ -47,19 +47,11 @@ dependencies {
     implementation("com.amazonaws:aws-java-sdk-dynamodb")
 
     // retrofit
-//    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-//    implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
-//    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.0")
-//    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0")
-//    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-//    implementation("com.squareup.okhttp3:mockwebserver:4.9.0")
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
     implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
 
-//    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-//    implementation("com.squareup.okhttp3:mockwebserver:4.9.0")
     implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
     implementation("com.squareup.okhttp3:mockwebserver:3.14.9")
 
@@ -88,22 +80,6 @@ application {
 }
 
 tasks {
-//    register<Zip> ("buildZip2") {
-//        println("hello world")
-//        println("hello world")
-//        from(compileKotlin)
-//        from(processResources)
-//        into("bbbbbbbbbbb") {
-//            from(configurations.runtime)
-//        }
-//    }
-//    create<Zip> ("buildZip") {
-//        from(compileKotlin)
-//        from(processResources)
-//        into("bbbbbbbbbbb") {
-//            from(configurations.runtime)
-//        }
-//    }
     named("build") {
         dependsOn("shadowJar")
     }
@@ -115,9 +91,7 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
-//tasks.withType<Test> {
-//    useJUnitPlatform()
-//}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "11"
