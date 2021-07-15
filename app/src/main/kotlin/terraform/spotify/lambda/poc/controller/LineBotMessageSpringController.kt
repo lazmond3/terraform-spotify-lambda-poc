@@ -26,7 +26,6 @@ class LineBotMessageSpringController(
                 logger =
                 object : LoggerInterface {
                     override fun log(message: String) {
-//                        println("[pseudo-logback] $message")
                         logger.info { message }
                     }
                 }

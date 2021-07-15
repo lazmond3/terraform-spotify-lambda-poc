@@ -8,6 +8,7 @@ data class UserToken(
     val userId: String? = null,
     val refreshToken: String? = null,
     val playlistId: String? = null,
+    val playlistName: String? = null,
     val accessToken: String? = null,
     val expiresAt: Int? = null,
     val updatedAt: String? = null,
@@ -17,6 +18,7 @@ data class UserToken(
         userId = result.get("UserId")?.s,
         refreshToken = result.get("RefreshToken")?.s,
         playlistId = result.get("PlayListId")?.s,
+        playlistName = result.get("PlayListName")?.s,
         accessToken = result.get("AccessToken")?.s,
         expiresAt = result.get("ExpiresAt")?.n?.toInt(),
         updatedAt = result.get("UpdatedAt")?.s

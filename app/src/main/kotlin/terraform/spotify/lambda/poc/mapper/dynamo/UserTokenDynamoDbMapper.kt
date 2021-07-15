@@ -69,6 +69,9 @@ class UserTokenDynamoDbMapper(
                         if (it.playlistId != null) {
                             map.put("PlayListId", withSAttributeUpdateValue(it.playlistId))
                         }
+                        if (it.playlistName != null) {
+                            map.put("PlayListName", withSAttributeUpdateValue(it.playlistName))
+                        }
                         if (it.expiresAt != null) {
                             map.put("ExpiresAt", withNAttributeUpdateValue(it.expiresAt.toString()))
                         }
@@ -140,8 +143,7 @@ class UserTokenDynamoDbMapper(
         val now = LocalDateTime.ofInstant(
             jpCal.toInstant(), ZoneId.of("Asia/Tokyo")
         )
-        val timeString = now.format(DateTimeFormatter.ISO_DATE_TIME)
-        return timeString
+        return now.format(DateTimeFormatter.ISO_DATE_TIME)
     }
 
     private fun getUnixTime(): Long {

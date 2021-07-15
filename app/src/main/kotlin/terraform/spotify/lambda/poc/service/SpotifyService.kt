@@ -42,7 +42,9 @@ class SpotifyService(
         // dynamo から取得する
         // [x] access トークンを取得する 実装済み
         val token: String = readAccessTokenOrUpdated(userId, logger)
-        val playlistId: String? = readPlaylistId(userId, logger)
+        val playlistInfo = readPlaylistId(userId, logger)
+        val playlistId = playlistInfo.first
+        val playlistName = playlistInfo.second
         if (playlistId == null) {
             return
         }
@@ -54,7 +56,11 @@ class SpotifyService(
         if (isAlreadyAdded(playlistId, trackId)) {
             val addedAt = getWhenAdded(playlistId, trackId)
             // LINE でメッセージ返したい
-            lineBotService.sendMessage(userId, text = "この曲は、$addedAt にすでに追加されています。")
+            lineBotService.sendMessage(
+                userId,
+                text = "この曲は、$addedAt にすでに追加されています。\n" +
+                    "url: ${body.item.externalUrls.spotify}"
+            )
         } else {
             // もし追加してなかったら、 playlist に追加して、 dynamo にも追加する。
             val response = spotifyApiClient.addToPlaylist(
@@ -74,10 +80,10 @@ class SpotifyService(
                 userId, playlistId, trackId, logger
             )
             lineBotService.sendMessage(
-                userId, text = "追加が完了しました。 \n" +
-                        "by     : ${body.item.artists[0].name}\n" +
-                        "タイトル: ${body.item.name}\n" +
-                        "url   : ${body.item.externalUrls.spotify}"
+                userId, text = "追加が完了しました ${playlistName?.let { " ($it) " } ?: ""}。  \n" +
+                "by     : ${body.item.artists[0].name}\n" +
+                "タイトル: ${body.item.name}\n" +
+                "url   : ${body.item.externalUrls.spotify}"
             )
         }
     }
@@ -87,7 +93,8 @@ class SpotifyService(
         // dynamo から取得する
         // [x] access トークンを取得する 実装済み
         val token: String = readAccessTokenOrUpdated(userId, logger)
-        val playlistId: String? = readPlaylistId(userId, logger)
+        val playlistInfo = readPlaylistId(userId, logger)
+        val playlistId = playlistInfo.first
         if (playlistId == null) {
             return
         }
@@ -125,16 +132,14 @@ class SpotifyService(
             )
             lineBotService.sendMessage(
                 userId, text = "削除が完了しました。 \n" +
-                        "by     : ${body.item.artists[0].name}\n" +
-                        "タイトル: ${body.item.name}\n" +
-                        "url   : ${body.item.externalUrls.spotify}"
+                "by     : ${body.item.artists[0].name}\n" +
+                "タイトル: ${body.item.name}"
             )
         } else {
             lineBotService.sendMessage(
                 userId, text = "この曲は登録されていません。 \n" +
-                        "by     : ${body.item.artists[0].name}\n" +
-                        "タイトル: ${body.item.name}\n" +
-                        "url   : ${body.item.externalUrls.spotify}"
+                "by     : ${body.item.artists[0].name}\n" +
+                "タイトル: ${body.item.name}"
             )
         }
     }
@@ -181,14 +186,14 @@ class SpotifyService(
         return result?.addedAt
     }
 
-    private fun readPlaylistId(userId: String, logger: LoggerInterface): String? {
+    private fun readPlaylistId(userId: String, logger: LoggerInterface): Pair<String?, String?> {
 
         // もし playlist が設定されてなかったら、
         // ここで SystemException を出す。
         // このハンドラ欲しいけど?
         val token = userTokenDynamoDbMapper.readTokenRowOrNull(userId, logger)
             ?: throw SystemException("No entry for UserId=$userId")
-        return token.playlistId
+        return Pair(token.playlistId, token.playlistName)
     }
 
     private fun readAccessTokenOrUpdated(userId: String, logger: LoggerInterface): String {
@@ -197,7 +202,7 @@ class SpotifyService(
 
         if (token.refreshToken != null &&
             (token.expiresAt == null ||
-                    checkExpired(token.expiresAt))
+                checkExpired(token.expiresAt))
         ) {
             // refresh Token する
             val refreshedAccessToken = refreshToken(token.refreshToken, logger)
