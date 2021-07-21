@@ -4,6 +4,7 @@ import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import org.springframework.stereotype.Component
 import retrofit2.Retrofit
 import retrofit2.converter.jackson.JacksonConverterFactory
 import terraform.spotify.lambda.poc.client.SpotifyApiAuthClient
@@ -17,6 +18,7 @@ import terraform.spotify.lambda.poc.variables.EnvironmentVariables
 import terraform.spotify.lambda.poc.variables.EnvironmentVariablesInterface
 import terraform.spotify.lambda.poc.variables.TestEnvironmentVariables
 
+@Component
 class ObjectConstructor(
     val isForReal: Boolean
 ) {

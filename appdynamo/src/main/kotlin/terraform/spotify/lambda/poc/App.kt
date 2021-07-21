@@ -16,8 +16,6 @@ import com.linecorp.bot.model.message.quickreply.QuickReply.items
 import terraform.spotify.lambda.poc.entity.PlaylistTrack
 
 
-class App {
-}
 
 fun main() {
     println("hello world")

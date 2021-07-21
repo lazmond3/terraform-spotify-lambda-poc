@@ -3,47 +3,47 @@ package terraform.spotify.lambda.poc.mapper.dynamo
 import com.amazonaws.AmazonServiceException
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB
 import com.amazonaws.services.dynamodbv2.model.*
-import com.amazonaws.services.lambda.runtime.LambdaLogger
-import terraform.spotify.lambda.poc.entity.PlaylistTrack
 import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
-import java.util.*
+import java.util.Calendar
 import kotlin.system.exitProcess
+import terraform.spotify.lambda.poc.`interface`.LoggerInterface
+import terraform.spotify.lambda.poc.entity.PlaylistTrack
 
 class SpotifyTrackDynamoDbMapper(
-    val tableName: String,
-    val gsiIndexName: String,
-    val dbClient: AmazonDynamoDB,
+        val tableName: String,
+        val gsiIndexName: String,
+        val dbClient: AmazonDynamoDB,
 ) {
-    fun readRowOrNull(playlistId: String, trackId: String, logger: LambdaLogger): PlaylistTrack? =
-        readRow(playlistId, trackId)
+    fun readRowOrNull(playlistId: String, trackId: String, logger: LoggerInterface): PlaylistTrack? =
+            readRow(playlistId, trackId)
 
 
-    fun delete(playlistId: String, trackId: String, logger: LambdaLogger?) {
+    fun delete(playlistId: String, trackId: String, logger: LoggerInterface?) {
         val result = dbClient.deleteItem(
-            DeleteItemRequest()
-                .withTableName(tableName)
-                .withKey(
-                    mapOf(
-                        "PlaylistId" to AttributeValue()
-                            .withS(playlistId),
-                        "TrackId" to AttributeValue()
-                            .withS(trackId)
-                    )
-                )
+                DeleteItemRequest()
+                        .withTableName(tableName)
+                        .withKey(
+                                mapOf(
+                                        "PlaylistId" to AttributeValue()
+                                                .withS(playlistId),
+                                        "TrackId" to AttributeValue()
+                                                .withS(trackId)
+                                )
+                        )
         )
         logger?.log("[delete] result: $result")
     }
 
-    fun create(userId: String, playlistId: String, trackId: String, logger: LambdaLogger) {
-        val now = LocalDateTime.now()
+    fun create(userId: String, playlistId: String, trackId: String, logger: LoggerInterface) {
+        val now = LocalDateTime.now(ZoneId.of("Asia/Tokyo"))
         val addedAt = now.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)
         val item: Map<String, AttributeValue> = mapOf(
-            "UserId" to AttributeValue(userId),
-            "PlaylistId" to AttributeValue(playlistId),
-            "TrackId" to AttributeValue(trackId),
-            "AddedAt" to AttributeValue(addedAt)
+                "UserId" to AttributeValue(userId),
+                "PlaylistId" to AttributeValue(playlistId),
+                "TrackId" to AttributeValue(trackId),
+                "AddedAt" to AttributeValue(addedAt)
         )
         try {
             dbClient.putItem(tableName, item);
@@ -59,40 +59,40 @@ class SpotifyTrackDynamoDbMapper(
 
     fun readRow(playlistId: String, trackId: String): PlaylistTrack? {
         val result = dbClient.getItem(
-            GetItemRequest()
-                .withTableName(tableName)
-                .withKey(
-                    mapOf(
-                        "PlaylistId" to AttributeValue()
-                            .withS(playlistId),
-                        "TrackId" to AttributeValue()
-                            .withS(trackId),
-                    )
-                )
+                GetItemRequest()
+                        .withTableName(tableName)
+                        .withKey(
+                                mapOf(
+                                        "PlaylistId" to AttributeValue()
+                                                .withS(playlistId),
+                                        "TrackId" to AttributeValue()
+                                                .withS(trackId),
+                                )
+                        )
 
         )
         return result.item?.let { PlaylistTrack(it) }
     }
 
     private fun withSAttributeUpdateValue(value: String) =
-        AttributeValueUpdate()
-            .withValue(
-                AttributeValue()
-                    .withS(value)
-            )
+            AttributeValueUpdate()
+                    .withValue(
+                            AttributeValue()
+                                    .withS(value)
+                    )
 
     private fun withNAttributeUpdateValue(value: String) =
-        AttributeValueUpdate()
-            .withValue(
-                AttributeValue()
-                    .withN(value)
-            )
+            AttributeValueUpdate()
+                    .withValue(
+                            AttributeValue()
+                                    .withN(value)
+                    )
 
 
     private fun makeNowTimeString(): String {
         val jpCal: Calendar = Calendar.getInstance()
         val now = LocalDateTime.ofInstant(
-            jpCal.toInstant(), ZoneId.of("Asia/Tokyo")
+                jpCal.toInstant(), ZoneId.of("Asia/Tokyo")
         )
         val timeString = now.format(DateTimeFormatter.ISO_DATE_TIME)
         return timeString

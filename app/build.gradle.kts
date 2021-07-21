@@ -13,6 +13,10 @@ plugins {
     id("com.github.johnrengelman.shadow") version "7.0.0"
     // Apply the application plugin to add support for building a CLI application in Java.
     application
+
+    id("org.springframework.boot") version "2.5.2"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    kotlin("plugin.spring") version "1.5.20"
 }
 
 repositories {
@@ -45,16 +49,28 @@ dependencies {
     // retrofit
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-jackson:2.9.0")
-    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.9.0")
-    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0")
-    implementation("com.squareup.okhttp3:logging-interceptor:4.9.0")
-    implementation("com.squareup.okhttp3:mockwebserver:4.9.0")
+    implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.12.3")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin:2.12.3")
+
+    implementation("com.squareup.okhttp3:logging-interceptor:3.14.9")
+    implementation("com.squareup.okhttp3:mockwebserver:3.14.9")
 
     // line bot
     implementation("com.linecorp.bot:line-bot-api-client:4.3.0")
+    implementation("com.linecorp.bot:line-bot-spring-boot:4.3.0")
 
     // mockk
     testImplementation("io.mockk:mockk:1.10.6")
+
+    implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+
+
+    // kotlin logging
+    implementation("io.github.microutils:kotlin-logging-jvm:2.0.8")
 }
 
 application {
@@ -63,22 +79,6 @@ application {
 }
 
 tasks {
-//    register<Zip> ("buildZip2") {
-//        println("hello world")
-//        println("hello world")
-//        from(compileKotlin)
-//        from(processResources)
-//        into("bbbbbbbbbbb") {
-//            from(configurations.runtime)
-//        }
-//    }
-//    create<Zip> ("buildZip") {
-//        from(compileKotlin)
-//        from(processResources)
-//        into("bbbbbbbbbbb") {
-//            from(configurations.runtime)
-//        }
-//    }
     named("build") {
         dependsOn("shadowJar")
     }
@@ -90,15 +90,13 @@ tasks.test {
         events("passed", "skipped", "failed")
     }
 }
-//tasks.withType<Test> {
-//    useJUnitPlatform()
-//}
+
 tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
     kotlinOptions {
         jvmTarget = "11"
         javaParameters = true
         freeCompilerArgs = listOf(
-            "-Xjsr305=strict"
+                "-Xjsr305=strict"
         )
     }
 }
