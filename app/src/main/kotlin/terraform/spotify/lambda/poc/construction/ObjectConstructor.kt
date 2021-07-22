@@ -76,6 +76,7 @@ class ObjectConstructor(
         lineBotService = lineBotService,
         spotifyDbMapper = spotifyTrackDynamoDbMapper,
         userTokenDynamoDBMapper = userTokenDynamoDBMapper,
-        spotifyService = spotifyService
+        spotifyService = spotifyService,
+        objectMapper = objectMapper
     )
 }

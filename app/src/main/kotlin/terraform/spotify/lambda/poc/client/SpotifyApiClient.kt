@@ -4,10 +4,7 @@ import retrofit2.Call
 import retrofit2.http.*
 import terraform.spotify.lambda.poc.request.AddToPlaylistRequest
 import terraform.spotify.lambda.poc.request.DeleteFromPlaylistRequest
-import terraform.spotify.lambda.poc.response.spotify.AddToPlaylistResponse
-import terraform.spotify.lambda.poc.response.spotify.DeleteFromPlaylistResponse
-import terraform.spotify.lambda.poc.response.spotify.PlaylistResponse
-import terraform.spotify.lambda.poc.response.spotify.SpotifyCurrentTrackResponse
+import terraform.spotify.lambda.poc.response.spotify.*
 
 interface SpotifyApiClient {
     @GET("/v1/me/player/currently-playing")
@@ -43,4 +40,11 @@ interface SpotifyApiClient {
         @Query("limit") limit: Int,
         @Query("offset") offset: Int = 0
     ): Call<PlaylistResponse>
+
+    @GET("/v1/playlists/{playlist_id}")
+    fun getSinglePlaylist(
+        @Header("Authorization") authorizationString: String,
+        @Header("Accept-Language") acceptLanguage: String = "ja;q=1",
+        @Path("playlist_id") playlistId: String,
+    ): Call<ReadPlaylistItemResponse>
 }

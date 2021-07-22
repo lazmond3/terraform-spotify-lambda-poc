@@ -6,7 +6,7 @@ import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import terraform.spotify.lambda.poc.construction.ObjectConstructor
 
-
+// Lambda で ハンドラがこちらに渡される
 class LambdaHandler : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
     val objectConstructor = ObjectConstructor(isForReal = true)
     val innerHandler = InnerHandler(objectConstructor)

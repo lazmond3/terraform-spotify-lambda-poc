@@ -1,14 +1,12 @@
 package terraform.spotify.lambda.poc.response.spotify
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
-import com.fasterxml.jackson.annotation.JsonProperty
-import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
-import java.time.LocalDate
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackResponse(
     val timestamp: Long,
@@ -21,14 +19,14 @@ data class SpotifyCurrentTrackResponse(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackActions(
     val disallows: SpotifyCurrentTrackActionsDisallows
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackActionsDisallows(
     val resuming: Boolean,
@@ -39,7 +37,7 @@ data class SpotifyCurrentTrackActionsDisallows(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackItem(
     val album: SpotifyCurrentTrackAlbum,
@@ -62,14 +60,14 @@ data class SpotifyCurrentTrackItem(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackExternalId(
     val isrc: String
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackAlbum(
     val albumType: String,
@@ -88,7 +86,7 @@ data class SpotifyCurrentTrackAlbum(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackArtist(
     val externalUrls: SpotifyCurrentTrackExternalUrl,
@@ -100,7 +98,7 @@ data class SpotifyCurrentTrackArtist(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackExternalUrl(
     val spotify: String
@@ -108,7 +106,7 @@ data class SpotifyCurrentTrackExternalUrl(
 
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class SpotifyCurrentTrackImage(
     val width: Int,

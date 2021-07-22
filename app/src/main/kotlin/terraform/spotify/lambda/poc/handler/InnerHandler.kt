@@ -11,7 +11,7 @@ import terraform.spotify.lambda.poc.entity.AwsInputEvent
 import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.request.PostLineUserDataWithCodeRequest
 
-
+// Lambda のみから利用される
 class InnerHandler(
         val objectConstructor: ObjectConstructor
 ) : RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {

@@ -15,7 +15,7 @@ import terraform.spotify.lambda.poc.model.QuickPostbackData
 class LineBotService(
     val token: String
 ) {
-    val client = LineMessagingClient.builder(token).build();
+    val client = LineMessagingClient.builder(token).build()
 
     fun sendMessage(mid: String, text: String) = client.pushMessage(
         PushMessage(
@@ -57,7 +57,7 @@ class LineBotService(
                     quickReplyData.map {
                         QuickReplyItem.builder()
                             .imageUrl(URI(it.imageUrl))
-                            .action(PostbackAction(it.label, it.data, it.displayMessage))
+                            .action(PostbackAction(it.label, it.data))
                             .build()
                     }
                 )
