@@ -26,10 +26,10 @@ class LineBotHookController(
 ) {
     // これは Lambda のみから呼ばれる
     fun handle(inputEvent: AwsInputEvent, context: Context): APIGatewayProxyResponseEvent {
-        inputEvent.events.forEach {
-            val message = "[received] ${it.message?.text}"
-            lineBotService.replyToMessage(it.replyToken, message)
-        }
+//        inputEvent.events.forEach {
+//            val message = "[received] ${it.message?.text}"
+////            lineBotService.replyToMessage(it.replyToken, message)
+//        }
 
         val postback = inputEvent.events[0].postback
         return if (postback != null) {
