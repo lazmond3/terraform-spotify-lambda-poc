@@ -113,8 +113,8 @@ function decodedSendPost(decoded, code, obj) {
     obj.log(`[decoded data] ${JSON.stringify(data)}`)
 
 
-    // fetch("/post", {
-    fetch("/test/post", {
+    // fetch("/test/post", {
+    fetch("/post", {
         method: "POST",
         headers: {
             "Content-Type": 'application/json'
