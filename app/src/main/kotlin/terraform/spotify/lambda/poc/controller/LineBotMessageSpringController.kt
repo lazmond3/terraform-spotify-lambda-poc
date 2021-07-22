@@ -16,22 +16,22 @@ private val logger = KotlinLogging.logger {}
 // これを利用する場合は、 ngrok を利用して line bot callback URL を変更する。
 @LineMessageHandler
 class LineBotMessageSpringController(
-        val objectConstructor: ObjectConstructor
+    val objectConstructor: ObjectConstructor
 ) {
     @EventMapping
     fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): TextMessage {
         val message = event.message.text
         val userId = event.source.userId
         objectConstructor.lineBotHookController.handleMessage(
-                isForSpring = true,
-                text = message,
-                userId = userId,
-                logger =
-                object : LoggerInterface {
-                    override fun log(message: String) {
-                        logger.info { message }
-                    }
+            isForSpring = true,
+            text = message,
+            userId = userId,
+            logger =
+            object : LoggerInterface {
+                override fun log(message: String) {
+                    logger.info { message }
                 }
+            }
 
         )
         logger.info { "event: $event" }
@@ -40,7 +40,7 @@ class LineBotMessageSpringController(
 
     @EventMapping
     fun handlePostbackEvent(event: PostbackEvent): TextMessage {
-        objectConstructor.lineBotHookController.handlePostBack(event)
+        objectConstructor.lineBotHookController.handlePostBackFromEventForSpringBoot(event)
         return TextMessage("ポストバックイベントを受け取りました")
     }
 }
