@@ -4,11 +4,13 @@ import com.linecorp.bot.client.LineMessagingClient
 import com.linecorp.bot.model.PushMessage
 import com.linecorp.bot.model.ReplyMessage
 import com.linecorp.bot.model.action.MessageAction
+import com.linecorp.bot.model.action.PostbackAction
 import com.linecorp.bot.model.message.TextMessage
 import com.linecorp.bot.model.message.quickreply.QuickReply
 import com.linecorp.bot.model.message.quickreply.QuickReplyItem
 import terraform.spotify.lambda.poc.model.QuickReplyData
 import java.net.URI
+import terraform.spotify.lambda.poc.model.QuickPostbackData
 
 class LineBotService(
     val token: String
@@ -39,6 +41,23 @@ class LineBotService(
                         QuickReplyItem.builder()
                             .imageUrl(URI(it.imageUrl))
                             .action(MessageAction(it.label, it.messageText))
+                            .build()
+                    }
+                )
+            )
+        )
+    )
+
+    fun sendQuickReplyPostbackAction(mid: String, text: String, quickReplyData: List<QuickPostbackData>) = client.pushMessage(
+        PushMessage(
+            mid,
+            TextMessage(
+                text,
+                QuickReply.items(
+                    quickReplyData.map {
+                        QuickReplyItem.builder()
+                            .imageUrl(URI(it.imageUrl))
+                            .action(PostbackAction(it.label, it.data, it.displayMessage))
                             .build()
                     }
                 )
