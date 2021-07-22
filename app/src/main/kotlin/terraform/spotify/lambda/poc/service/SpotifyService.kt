@@ -32,6 +32,35 @@ class SpotifyService(
     val objectConstructor: ObjectConstructor
 ) {
 
+    // 呼ばれるところ: プレイリスト追加
+    private fun addToFavorite(userId: String, trackId: String, logger: LoggerInterface) {
+        val token: String = readAccessTokenOrUpdated(userId, logger)
+        logger.log("trackid: $trackId")
+        val trackSimpleId = trackId.split(":")[2]
+        val response = spotifyApiClient.addToFavorite(
+            authorizationString = "Bearer $token",
+            ids = trackSimpleId
+        ).execute()
+        logger.log("response: ${response.code()} error: ${response.errorBody()?.string()}")
+        if (response.code() >= 300) {
+            logger.log("[addToFavorite] service failed for userId:$userId, trackId: $trackId")
+            throw SystemException("[addToFavorite] service failed for userId:$userId, trackId: $trackId")
+        }
+    }
+
+    private fun deleteFromFavorite(userId: String, trackId: String, logger: LoggerInterface) {
+        val token: String = readAccessTokenOrUpdated(userId, logger)
+        val trackSimpleId = trackId.split(":")[2]
+        val response = spotifyApiClient.deleteFromFavorite(
+            authorizationString = "Bearer $token",
+            ids = trackSimpleId
+        ).execute()
+        if (response.code() >= 300) {
+            logger.log("[deleteFromFavorite] service failed for userId:$userId, trackId: $trackId")
+            throw SystemException("[deleteFromFavorite] service failed for userId:$userId, trackId: $trackId")
+        }
+    }
+
     fun getSinglePlaylist(userId: String, playlistId: String, logger: LoggerInterface): ReadPlaylistItemResponse {
         val token: String = readAccessTokenOrUpdated(userId, logger)
         val response = spotifyApiClient.getSinglePlaylist(
@@ -101,6 +130,8 @@ class SpotifyService(
         val body = currentTrackInfo(token)
         val trackId = body.item.uri
 
+        addToFavorite(userId, trackId, logger)
+
         // dynamo にすでに追加してないか検証
         if (isAlreadyAdded(playlistId, trackId)) {
             val addedAt = getWhenAdded(playlistId, trackId)
@@ -155,6 +186,9 @@ class SpotifyService(
         // spotify API で trackId を取得
         val body = currentTrackInfo(token)
         val trackId = body.item.uri
+
+        // お気に入りから削除
+        deleteFromFavorite(userId, trackId, logger)
 
         // dynamo にすでに追加してないか検証
         if (isAlreadyAdded(playlistId, trackId)) {

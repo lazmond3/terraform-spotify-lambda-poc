@@ -47,4 +47,18 @@ interface SpotifyApiClient {
         @Header("Accept-Language") acceptLanguage: String = "ja;q=1",
         @Path("playlist_id") playlistId: String,
     ): Call<ReadPlaylistItemResponse>
+
+    @PUT("/v1/me/tracks")
+    fun addToFavorite(
+        @Header("Authorization") authorizationString: String,
+        @Header("Accept-Language") acceptLanguage: String = "ja;q=1",
+        @Query("ids") ids: String
+    ): Call<Void>
+
+    @DELETE("/v1/me/tracks")
+    fun deleteFromFavorite(
+        @Header("Authorization") authorizationString: String,
+        @Header("Accept-Language") acceptLanguage: String = "ja;q=1",
+        @Query("ids") ids: String
+    ): Call<Void>
 }
