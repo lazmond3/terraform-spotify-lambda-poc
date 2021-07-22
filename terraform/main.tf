@@ -20,3 +20,14 @@ provider "aws" {
   alias  = "virginia"
   region = "us-east-1"
 }
+
+
+/* ALB の 設定 */
+module "alb-lambda" {
+  source                                   = "github.com/lazmond3/terraform-https-alb-lambda"
+  app                                      = "spotify-line-bot"
+  environment                              = "develop"
+  aws_lambda_function_lambda_arn           = aws_lambda_function.java_lambda_function.arn
+  aws_lambda_function_lambda_id            = aws_lambda_function.java_lambda_function.id
+  aws_lambda_function_lambda_function_name = aws_lambda_function.java_lambda_function.function_name
+}
