@@ -22,7 +22,7 @@ data class Event(
 
 @NoArgsConstructor
 data class PostbackAwsEvent(
-    val data: PostbackEventData
+    val data: String
 )
 
 @NoArgsConstructor

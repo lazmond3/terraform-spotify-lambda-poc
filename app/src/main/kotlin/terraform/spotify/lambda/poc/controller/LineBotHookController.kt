@@ -33,7 +33,8 @@ class LineBotHookController(
 
         val postback = inputEvent.events[0].postback
         return if (postback != null) {
-            handlePostBack(postback.data)
+            val data = objectMapper.readValue(postback.data, PostbackEventData::class.java)
+            handlePostBack(data)
         } else {
             assert(inputEvent.events[0].message != null)
             val text = inputEvent.events[0].message?.text
