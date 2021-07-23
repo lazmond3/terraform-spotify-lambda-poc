@@ -1,38 +1,35 @@
-import * as React from 'react';
+import * as React from "react";
+import {
+  useGlobalState,
+  useSetGlobalState,
+} from "./contexts/GlobalStateContext";
 
 // Propsの型定義
 interface IProps {
-    name: string;
+  name: string;
 }
 
 interface IState {
-    count: number;
+  count: number;
 }
 
-export class SubComponent extends React.Component<IProps, IState> {
-    constructor(props) {
-        super(props);
-        this.state = {
-            count: 0,
-        };
-    }
+export const SubComponent = () => {
+  const state = useGlobalState();
+  const setGlobalState = useSetGlobalState();
+  const handleClick = React.useCallback(() => {
+    console.log("クリックされました");
 
-    handleClick() {
-        console.log('クリックされました');
+    setGlobalState((s) => ({
+      ...s,
+      value: s.value + 1,
+    }));
+  }, [setGlobalState]);
 
-        this.setState({
-            count: this.state.count + 1,
-        });
-    }
-
-    render() {
-
-        return (
-            <div>
-                <h2>{this.props.name}</h2>
-                <div>{this.state.count}</div>
-                <button onClick={this.handleClick.bind(this)}>Add +1</button>
-            </div>
-        );
-    }
-}
+  return (
+    <div>
+      <h2>count:</h2>
+      <div>{state.value}</div>
+      <button onClick={handleClick}>Add +1</button>
+    </div>
+  );
+};
