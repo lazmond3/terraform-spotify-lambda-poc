@@ -41,5 +41,8 @@ module.exports = {
             stream: false,
             // crypto: false
         }
+    },
+    optimization: {
+        minimize: true
     }
 };
