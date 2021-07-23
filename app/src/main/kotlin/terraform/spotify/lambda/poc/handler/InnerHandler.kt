@@ -109,6 +109,9 @@ class InnerHandler(
                         )
                     }
 
+                    objectConstructor.lineBotService.sendMessage(userId, "Spotifyと連携しました！")
+                    logger.log("Spotifyと連携しました")
+
                     logger.log("[post の結果] index.html を返却する return 直前")
                     APIGatewayProxyResponseEvent().apply {
                         isBase64Encoded = false
