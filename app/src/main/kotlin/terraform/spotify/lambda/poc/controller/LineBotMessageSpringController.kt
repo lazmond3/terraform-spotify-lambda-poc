@@ -19,7 +19,7 @@ class LineBotMessageSpringController(
     val objectConstructor: ObjectConstructor
 ) {
     @EventMapping
-    fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>): TextMessage {
+    fun handleTextMessageEvent(event: MessageEvent<TextMessageContent>) {
         val message = event.message.text
         val userId = event.source.userId
         objectConstructor.lineBotHookController.handleMessage(
@@ -35,12 +35,12 @@ class LineBotMessageSpringController(
 
         )
         logger.info { "event: $event" }
-        return TextMessage(event.message.text)
+//        return TextMessage(event.message.text)
     }
 
     @EventMapping
-    fun handlePostbackEvent(event: PostbackEvent): TextMessage {
+    fun handlePostbackEvent(event: PostbackEvent) {
         objectConstructor.lineBotHookController.handlePostBackFromEventForSpringBoot(event)
-        return TextMessage("ポストバックイベントを受け取りました")
+//        return TextMessage("ポストバックイベントを受け取りました")
     }
 }

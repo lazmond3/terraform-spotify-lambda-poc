@@ -5,12 +5,16 @@ import com.linecorp.bot.model.PushMessage
 import com.linecorp.bot.model.ReplyMessage
 import com.linecorp.bot.model.action.MessageAction
 import com.linecorp.bot.model.action.PostbackAction
+import com.linecorp.bot.model.message.TemplateMessage
 import com.linecorp.bot.model.message.TextMessage
 import com.linecorp.bot.model.message.quickreply.QuickReply
 import com.linecorp.bot.model.message.quickreply.QuickReplyItem
-import terraform.spotify.lambda.poc.model.QuickReplyData
+import com.linecorp.bot.model.message.template.CarouselColumn
+import com.linecorp.bot.model.message.template.CarouselTemplate
 import java.net.URI
+import terraform.spotify.lambda.poc.`interface`.LoggerInterface
 import terraform.spotify.lambda.poc.model.QuickPostbackData
+import terraform.spotify.lambda.poc.model.QuickReplyData
 
 class LineBotService(
     val token: String
@@ -65,4 +69,18 @@ class LineBotService(
         )
     )
 
+    fun sendMultipleCarouselMessage(mid: String, carouselList: List<CarouselColumn>, logger: LoggerInterface) {
+
+        val future = client.pushMessage(
+            PushMessage(
+                mid,
+                TemplateMessage(
+                    "プレイリスト",
+                    CarouselTemplate(carouselList)
+                )
+            )
+        )
+        logger.log("details: ${future.get().details}, message:${ future.get().message}")
+
+    }
 }

@@ -3,7 +3,11 @@ package terraform.spotify.lambda.poc.controller
 import com.amazonaws.services.lambda.runtime.Context
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.linecorp.bot.model.action.PostbackAction
 import com.linecorp.bot.model.event.PostbackEvent
+import com.linecorp.bot.model.message.template.CarouselColumn
+import com.linecorp.bot.model.message.template.ImageCarouselColumn
+import java.net.URI
 import mu.KotlinLogging
 import terraform.spotify.lambda.poc.`interface`.LoggerInterface
 import terraform.spotify.lambda.poc.entity.AwsInputEvent
@@ -11,9 +15,9 @@ import terraform.spotify.lambda.poc.exception.SystemException
 import terraform.spotify.lambda.poc.mapper.dynamo.SpotifyTrackDynamoDbMapper
 import terraform.spotify.lambda.poc.mapper.dynamo.UserTokenDynamoDbMapper
 import terraform.spotify.lambda.poc.model.PostbackEventData
-import terraform.spotify.lambda.poc.model.QuickPostbackData
 import terraform.spotify.lambda.poc.service.LineBotService
 import terraform.spotify.lambda.poc.service.SpotifyService
+
 
 private val logger = KotlinLogging.logger {}
 
@@ -64,12 +68,13 @@ class LineBotHookController(
             "プレイリスト追加" -> {
                 val playlistId = data.playlistId
                     ?: throw SystemException("playlist Id is null: $data")
+                val playlistId2 = playlistId.split(":")[2]
                 val loggerAsInterface = object : LoggerInterface {
                     override fun log(message: String) {
                         logger.info { message }
                     }
                 }
-                spotifyService.registerNewPlaylistId(data.userId, playlistId, loggerAsInterface)
+                spotifyService.registerNewPlaylistId(data.userId, playlistId2, loggerAsInterface)
             }
         }
         return APIGatewayProxyResponseEvent().apply {
@@ -117,34 +122,66 @@ class LineBotHookController(
                 } else {
                     val response = spotifyService.getPlaylists(userId, logger)
                     logger.log("[controller : response register playlist] ${response}")
-                    lineBotService.sendQuickReplyPostbackAction(
+                    lineBotService.sendMultipleCarouselMessage(
                         mid = userId,
-                        text = "プレイリストを選んでください",
-                        quickReplyData =
-                        response.items.map {
-                            val uri = it.uri.split(":")[2]
-
+                        carouselList = response.items.map {
                             val imageUrl = if (it.images.isNotEmpty()) {
                                 it.images.sortedByDescending { it.height }[0].url
                             } else {
                                 "https://img.icons8.com/material-outlined/24/000000/menu--v3.png"
                             }
-                            QuickPostbackData(
-                                imageUrl = imageUrl,
-                                label = it.name,
-                                data = objectMapper.writeValueAsString(
-                                    PostbackEventData(
-                                        userId = userId,
-                                        cmd = "プレイリスト追加",
-                                        playlistId = uri,
-                                        playlistName = ""
-                                    )
-                                ),
-//                                data = "プレイリスト追加 $uri",
-                                displayMessage = it.name
+                            val imageUri = createUri(imageUrl)
+                            logger.log("imageUri: $imageUri")
+                            val data = objectMapper.writeValueAsString(
+                                PostbackEventData(
+                                    userId = userId,
+                                    cmd = "プレイリスト追加",
+                                    playlistId = it.uri,
+                                    playlistName = null
+                                )
                             )
-                        }
+                            CarouselColumn(
+                                imageUri,
+                                it.name,
+                                (it.description + " " + it.owner.displayName).takeIf { it.isNotEmpty() } ?: " ",
+                                listOf(
+                                    PostbackAction(
+                                        "1回だけタップ",
+                                        data
+                                    )
+                                )
+                            )
+                        },
+                        logger = logger
                     )
+//                    lineBotService.sendQuickReplyPostbackAction(
+//                        mid = userId,
+//                        text = "プレイリストを選んでください",
+//                        quickReplyData =
+//                        response.items.map {
+//                            val uri = it.uri.split(":")[2]
+//
+//                            val imageUrl = if (it.images.isNotEmpty()) {
+//                                it.images.sortedByDescending { it.height }[0].url
+//                            } else {
+//                                "https://img.icons8.com/material-outlined/24/000000/menu--v3.png"
+//                            }
+//                            QuickPostbackData(
+//                                imageUrl = imageUrl,
+//                                label = it.name,
+//                                data = objectMapper.writeValueAsString(
+//                                    PostbackEventData(
+//                                        userId = userId,
+//                                        cmd = "プレイリスト追加",
+//                                        playlistId = uri,
+//                                        playlistName = ""
+//                                    )
+//                                ),
+////                                data = "プレイリスト追加 $uri",
+//                                displayMessage = it.name
+//                            )
+//                        }
+//                    )
                 }
             }
         }
@@ -178,5 +215,9 @@ class LineBotHookController(
                 "Add success! $userId, $playlistId, $trackId"
             )
         }
+    }
+
+    private fun createUri(path: String): URI {
+        return URI.create(path)
     }
 }

@@ -95,6 +95,7 @@ class SpotifyService(
         )
 
         userTokenDynamoDbMapper.update(newUserToken)
+        lineBotService.sendMessage(userId, "プレイリストを登録しました: ${playlist.name}")
     }
 
     // add-current のときに、PlaylistName がなければ、dynamoDB にアップデートをかける
