@@ -10,6 +10,7 @@ import {
 } from "./contexts/GlobalStateContext";
 import { LineLogin } from "./components/LineLogin";
 import { hrefSpotify } from "./util/value";
+import liff from "@line/liff/dist/lib";
 
 new VConsole({ maxLogNumber: 1000 });
 
@@ -55,7 +56,7 @@ const Switcher: React.FC<SwitcherProp> = (prop) => {
       const queryString = window.location.search;
       const urlParams = new URLSearchParams(queryString);
       const code = urlParams.get("code");
-      if (code) {
+      if (code && state.idToken?.iss) {
         console.log("code が存在した！");
         setGlobalState((s) => ({
           ...s,
@@ -77,9 +78,10 @@ const Switcher: React.FC<SwitcherProp> = (prop) => {
           console.log(`[fetch error] e: ${e}, ej: ${ej}`);
         });
         console.log(`result: ${JSON.stringify(result)}`);
+        liff.closeWindow();
       }
     })();
-  }, [window.location]);
+  }, [window.location, state.idToken]);
   return <></>;
 };
 

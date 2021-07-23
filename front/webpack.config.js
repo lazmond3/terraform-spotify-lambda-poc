@@ -30,7 +30,7 @@ module.exports = {
         contentBase: "./public",
         hot: true,
         port: 7999,
-        public: "cbcaddf219f9.ngrok.io"
+        public: "b84068bfa68c.ngrok.io"
         // public: true
     },
     resolve: {
