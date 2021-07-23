@@ -22,15 +22,24 @@ module.exports = {
             }
         ]
     },
-    // import 文で .ts や .tsx ファイルを解決するため
-    resolve: {
-        extensions: [".ts", ".tsx", ".js", ".json"]
-    },
     // ES5(IE11等)向けの指定（webpack 5以上で必要）
     target: ["web", "es5"],
+    // target: ["web"],
     devServer: {
         publicPath: "/",
         contentBase: "./public",
-        hot: true
+        hot: true,
+        port: 7999,
+        public: "cbcaddf219f9.ngrok.io"
+        // public: true
     },
+    resolve: {
+        // import 文で .ts や .tsx ファイルを解決するため
+        extensions: [".ts", ".tsx", ".js", ".json"],
+        fallback: {
+            crypto: require.resolve("crypto-browserify"),
+            stream: false,
+            // crypto: false
+        }
+    }
 };
