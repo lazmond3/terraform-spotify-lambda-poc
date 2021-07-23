@@ -128,7 +128,16 @@ class SpotifyService(
         val playlistName = playlistInfo.playlistName
             ?: updatePlaylistName(userId, playlistId = playlistId, logger)
 
-        val body = currentTrackInfo(token)
+        val body = kotlin.runCatching {
+            currentTrackInfo(token)
+        }.fold(
+            onSuccess = { it },
+            onFailure = {
+                lineBotService.sendMessage(userId, "音楽が再生されていません")
+                logger.log("[addCurrentTrackToPlaylist] 音楽が再生されていないので return")
+                throw SystemException("音楽が再生されていない")
+            }
+        )
         val trackId = body.item.uri
 
         addToFavorite(userId, trackId, logger)
@@ -181,13 +190,22 @@ class SpotifyService(
             ?: run {
                 lineBotService.sendMessage(userId, "プレイリストIDが登録されていません。")
                 logger.log("[deleteCurrentTrackFromPlaylist] playlist Id が null です")
-                throw SystemException("プレイリストIDが設定されていません。")
+                return
             }
         val playlistName = playlistInfo.playlistName
             ?: updatePlaylistName(userId, playlistId = playlistId, logger)
 
         // spotify API で trackId を取得
-        val body = currentTrackInfo(token)
+        val body = runCatching {
+            currentTrackInfo(token)
+        }.fold(
+            onSuccess = { it },
+            onFailure = {
+                lineBotService.sendMessage(userId, "音楽が再生されていません")
+                logger.log("[deleteCurrentTrackFromPlaylist] 音楽が再生されていないので return")
+                return
+            }
+        )
         val trackId = body.item.uri
 
         // お気に入りから削除

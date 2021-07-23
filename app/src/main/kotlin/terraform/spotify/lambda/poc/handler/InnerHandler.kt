@@ -82,7 +82,8 @@ class InnerHandler(
                     }
                 }
                 "POST" -> {
-                    val headers = mapOf<String, String>(
+                    logger.log("codeがPOSTされた！")
+                    val headers = mapOf(
                             "Cache-Control" to "no-store, no-chache"
                     )
                     val postRequest = objectMapper.readValue(input.body, PostLineUserDataWithCodeRequest::class.java)
@@ -101,16 +102,18 @@ class InnerHandler(
                                         refreshToken = refreshToken
                                 )
                         )
+                        objectConstructor.lineBotService.sendMessage(userId, "refreshToken を更新しました！")
+                        logger.log("refreshToken を更新しました")
                     } else {
                         objectConstructor.userTokenDynamoDBMapper.registerRefreshToken(
                                 userId = userId,
                                 refreshToken = refreshToken,
                                 logger = logger
                         )
+                        objectConstructor.lineBotService.sendMessage(userId, "Spotifyと連携しました！")
+                        logger.log("Spotifyと連携しました")
                     }
 
-                    objectConstructor.lineBotService.sendMessage(userId, "Spotifyと連携しました！")
-                    logger.log("Spotifyと連携しました")
 
                     logger.log("[post の結果] index.html を返却する return 直前")
                     APIGatewayProxyResponseEvent().apply {
