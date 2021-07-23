@@ -140,7 +140,9 @@ class SpotifyService(
             lineBotService.sendMessage(
                 userId,
                 text = "この曲は、${addedAt} に ${playlistName} にすでに追加されています。\n" +
-                    "${body.item.externalUrls.spotify}"
+                    "タイトル: ${body.item.name}\n" +
+                    "by     : ${body.item.artists[0].name}\n" +
+                    body.item.externalUrls.spotify
             )
         } else {
             // もし追加してなかったら、 playlist に追加して、 dynamo にも追加する。
@@ -164,7 +166,7 @@ class SpotifyService(
                 userId, text = "追加が完了しました ${playlistName.let { " ($it) " }}。  \n" +
                 "タイトル: ${body.item.name}\n" +
                 "by     : ${body.item.artists[0].name}\n" +
-                "${body.item.externalUrls.spotify}"
+                body.item.externalUrls.spotify
             )
         }
     }
