@@ -252,7 +252,7 @@ class SpotifyService(
         val token: String = readAccessTokenOrUpdated(userId, logger)
         val response = spotifyApiClient.getPlaylists(
             authorizationString = "Bearer $token",
-            limit = 4
+            limit = 7
         ).execute()
         val body = response.body()
 

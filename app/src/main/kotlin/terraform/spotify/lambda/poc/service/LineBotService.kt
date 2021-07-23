@@ -52,22 +52,28 @@ class LineBotService(
         )
     )
 
-    fun sendQuickReplyPostbackAction(mid: String, text: String, quickReplyData: List<QuickPostbackData>) = client.pushMessage(
-        PushMessage(
-            mid,
-            TextMessage(
-                text,
-                QuickReply.items(
-                    quickReplyData.map {
-                        QuickReplyItem.builder()
-                            .imageUrl(URI(it.imageUrl))
-                            .action(PostbackAction(it.label, it.data))
-                            .build()
-                    }
+    fun sendQuickReplyPostbackAction(mid: String, text: String, quickReplyData: List<QuickPostbackData>, logger: LoggerInterface) {
+        val future = client.pushMessage(
+            PushMessage(
+                mid,
+                TextMessage(
+                    text,
+                    QuickReply.items(
+                        quickReplyData.map {
+                            QuickReplyItem.builder()
+                                .imageUrl(URI(it.imageUrl))
+                                .action(PostbackAction(
+                                    if (it.label.length >= 20) {
+                                        it.label.substring(0, 20)
+                                    } else it.label, it.data))
+                                .build()
+                        }
+                    )
                 )
             )
         )
-    )
+        logger.log("details: ${future.get().details}, message:${future.get().message}")
+    }
 
     fun sendMultipleCarouselMessage(mid: String, carouselList: List<CarouselColumn>, logger: LoggerInterface) {
 
@@ -80,7 +86,7 @@ class LineBotService(
                 )
             )
         )
-        logger.log("details: ${future.get().details}, message:${ future.get().message}")
+        logger.log("details: ${future.get().details}, message:${future.get().message}")
 
     }
 }
