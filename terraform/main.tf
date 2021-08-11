@@ -23,12 +23,12 @@ provider "aws" {
 
 
 /* ALB の 設定 */
-module "alb-lambda" {
-  source                                   = "github.com/lazmond3/terraform-https-alb-lambda"
-  app                                      = "spotify-line-bot"
-  environment                              = "develop"
-  aws_lambda_function_lambda_arn           = aws_lambda_function.java_lambda_function.arn
-  aws_lambda_function_lambda_id            = aws_lambda_function.java_lambda_function.id
-  aws_lambda_function_lambda_function_name = aws_lambda_function.java_lambda_function.function_name
-  domain                                   = "moikilo00.net"
-}
+# module "alb-lambda" {
+#   source                                   = "github.com/lazmond3/terraform-https-alb-lambda"
+#   app                                      = "spotify-line-bot"
+#   environment                              = "develop"
+#   aws_lambda_function_lambda_arn           = aws_lambda_function.spotify_lambda.arn
+#   aws_lambda_function_lambda_id            = aws_lambda_function.spotify_lambda.id
+#   aws_lambda_function_lambda_function_name = aws_lambda_function.spotify_lambda.function_name
+#   domain                                   = "moikilo00.net"
+# }
