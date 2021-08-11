@@ -36,7 +36,7 @@ resource "aws_api_gateway_integration" "lambda" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.java_lambda_function.invoke_arn
+  uri                     = aws_lambda_function.spotify_lambda.invoke_arn
 }
 
 
@@ -55,14 +55,14 @@ resource "aws_api_gateway_integration" "lambda_root" {
 
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
-  uri                     = aws_lambda_function.java_lambda_function.invoke_arn
+  uri                     = aws_lambda_function.spotify_lambda.invoke_arn
 
 }
 
 resource "aws_lambda_permission" "apigw" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
-  function_name = aws_lambda_function.java_lambda_function.function_name
+  function_name = aws_lambda_function.spotify_lambda.function_name
   principal     = "apigateway.amazonaws.com"
 
   # The "/*/*" portion grants access from any method on any resource

@@ -1,8 +1,8 @@
-resource "aws_lambda_function" "java_lambda_function" {
+resource "aws_lambda_function" "spotify_lambda" {
   runtime          = var.lambda_runtime
   filename         = var.lambda_payload_filename
   source_code_hash = filebase64sha256(var.lambda_payload_filename)
-  function_name    = "java_lambda_function"
+  function_name    = "spotify_lambda"
 
   handler = var.lambda_function_handler
   timeout = 60
