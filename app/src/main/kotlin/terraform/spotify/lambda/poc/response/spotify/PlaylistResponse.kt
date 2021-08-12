@@ -1,16 +1,17 @@
 package terraform.spotify.lambda.poc.response.spotify
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class PlaylistResponse(
     val href: String,
-    val items: List<ReadPlaylistItem>,
+    val items: List<ReadPlaylistItemResponse>,
     val limit: Int,
     val next: String?,
     val offset: Int,
@@ -20,9 +21,9 @@ data class PlaylistResponse(
 
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
-data class ReadPlaylistItem(
+data class ReadPlaylistItemResponse(
     val collaborative: Boolean,
     val description: String,
     val externalUrls: SpotifyCurrentTrackExternalUrl,
@@ -40,7 +41,7 @@ data class ReadPlaylistItem(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItemImage(
     val height: Int,
@@ -49,7 +50,7 @@ data class ReadPlaylistItemImage(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItemOwner(
     val displayName: String,
@@ -61,7 +62,7 @@ data class ReadPlaylistItemOwner(
 )
 
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
 @JsonIgnoreProperties(ignoreUnknown=true)
 data class ReadPlaylistItemTrack(
     val href: String,
