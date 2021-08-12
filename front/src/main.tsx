@@ -67,7 +67,7 @@ const Switcher: React.FC<SwitcherProp> = (prop) => {
           code: code,
         };
         console.log(`fetch /post を実行...`);
-        const result = await fetch("/post", {
+        const result = await fetch("/develop/post", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
