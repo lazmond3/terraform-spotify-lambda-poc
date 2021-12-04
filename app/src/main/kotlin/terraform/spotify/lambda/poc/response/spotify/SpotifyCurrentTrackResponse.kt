@@ -53,7 +53,7 @@ data class SpotifyCurrentTrackItem(
     val isPlayable: Boolean,
     val name: String,
     val popularity: Int,
-    val previewUrl: String,
+    val previewUrl: String?,
     val trackNumber: Int,
     val type: String,
     val uri: String
