@@ -1,7 +1,7 @@
 // https://github.com/prameshbhattarai/java-lambda-terraform/blob/master/terraform/log-group.tf
 // Create a log group for the lambda
 resource "aws_cloudwatch_log_group" "log_group" {
-  name = "/aws/lambda/java_lambda_function"
+  name = "/aws/lambda/spotify_lambda"
 }
 
 # allow lambda to log to cloudwatch

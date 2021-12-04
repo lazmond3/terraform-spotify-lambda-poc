@@ -48,6 +48,12 @@ const InitialLoginApp: React.FC = () => {
 interface SwitcherProp {
   pathPattern: PathPattern;
 }
+const stagingNameEnv: string = process.env.REACT_APP_STAGING_NAME
+let stagingName: string = ""
+if (stagingNameEnv !== null && stagingNameEnv.length !== 0) {
+  stagingName = "/" + stagingNameEnv
+}
+
 const Switcher: React.FC<SwitcherProp> = (prop) => {
   const state = useGlobalState();
   const setGlobalState = useSetGlobalState();
@@ -67,7 +73,7 @@ const Switcher: React.FC<SwitcherProp> = (prop) => {
           code: code,
         };
         console.log(`fetch /post を実行...`);
-        const result = await fetch("/post", {
+        const result = await fetch( stagingName + "/post", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
