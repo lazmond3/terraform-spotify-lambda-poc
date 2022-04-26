@@ -7,12 +7,12 @@ import terraform.spotify.lambda.poc.model.PostbackEventData
 data class AwsInputEvent(
     val destination: String,
     val events: List<Event>,
-    val webhookEventId: String
 )
 
 @NoArgsConstructor
 data class Event(
     val type: String,
+    val webhookEventId: String,
     val message: Message?,
     val postback: PostbackAwsEvent?,
     val timestamp: Long,
