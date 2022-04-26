@@ -1,17 +1,20 @@
 package terraform.spotify.lambda.poc.entity
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
 import terraform.spotify.lambda.poc.model.PostbackEventData
 
 @NoArgsConstructor
 data class AwsInputEvent(
     val destination: String,
-    val events: List<Event>
+    val events: List<Event>,
 )
 
 @NoArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class Event(
     val type: String,
+    val webhookEventId: String,
     val message: Message?,
     val postback: PostbackAwsEvent?,
     val timestamp: Long,
