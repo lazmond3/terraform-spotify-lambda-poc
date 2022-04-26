@@ -6,7 +6,8 @@ import terraform.spotify.lambda.poc.model.PostbackEventData
 @NoArgsConstructor
 data class AwsInputEvent(
     val destination: String,
-    val events: List<Event>
+    val events: List<Event>,
+    val webhookEventId: String
 )
 
 @NoArgsConstructor
