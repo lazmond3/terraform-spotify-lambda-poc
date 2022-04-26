@@ -7,110 +7,110 @@ import terraform.spotify.lambda.poc.annotation.NoArgsConstructor
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackResponse(
-    val timestamp: Long,
-    val context: Any?,
-    val progress_ms: Long,
-    val item: SpotifyCurrentTrackItem,
-    val currentlyPlayingType: String,
-    val actions: SpotifyCurrentTrackActions,
-    val isPlaying: Boolean
+        val timestamp: Long,
+        val context: Any?,
+        val progress_ms: Long,
+        val item: SpotifyCurrentTrackItem,
+        val currentlyPlayingType: String,
+        val actions: SpotifyCurrentTrackActions,
+        val isPlaying: Boolean
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackActions(
-    val disallows: SpotifyCurrentTrackActionsDisallows
+        val disallows: SpotifyCurrentTrackActionsDisallows
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackActionsDisallows(
-    val resuming: Boolean,
-    val skippingPrev: Boolean,
-    val togglingRepeatContext: Boolean,
-    val togglingRepeatTrack: Boolean,
-    val togglingShuffle: Boolean
+        val resuming: Boolean,
+        val skippingPrev: Boolean,
+        val togglingRepeatContext: Boolean,
+        val togglingRepeatTrack: Boolean,
+        val togglingShuffle: Boolean
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackItem(
-    val album: SpotifyCurrentTrackAlbum,
-    val artists: List<SpotifyCurrentTrackArtist>,
-    val discNumber: Int,
-    val durationMs: Int,
-    val explicit: Boolean,
-    val externalIds: SpotifyCurrentTrackExternalId,
-    val externalUrls: SpotifyCurrentTrackExternalUrl,
-    val href: String,
-    val id: String,
-    val isLocal: Boolean,
-    val isPlayable: Boolean,
-    val name: String,
-    val popularity: Int,
-    val previewUrl: String?,
-    val trackNumber: Int,
-    val type: String,
-    val uri: String
+        val album: SpotifyCurrentTrackAlbum,
+        val artists: List<SpotifyCurrentTrackArtist>,
+        val discNumber: Int,
+        val durationMs: Int,
+        val explicit: Boolean,
+        val externalIds: SpotifyCurrentTrackExternalId,
+        val externalUrls: SpotifyCurrentTrackExternalUrl,
+        val href: String,
+        val id: String,
+        val isLocal: Boolean,
+        val isPlayable: Boolean,
+        val name: String,
+        val popularity: Int,
+        val previewUrl: String?,
+        val trackNumber: Int,
+        val type: String,
+        val uri: String
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackExternalId(
-    val isrc: String
+        val isrc: String
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackAlbum(
-    val albumType: String,
-    val artists: List<SpotifyCurrentTrackArtist>,
-    val externalUrls: SpotifyCurrentTrackExternalUrl,
-    val href: String,
-    val id: String,
-    val images: List<SpotifyCurrentTrackImage>,
-    val name: String,
-    val releaseDate: String, // これちゃんと取得できるか
-    val releaseDatePrecision: String, // "day"
-    val totalTracks: Int,
-    val type: String,
-    val uri: String
+        val albumType: String,
+        val artists: List<SpotifyCurrentTrackArtist>,
+        val externalUrls: SpotifyCurrentTrackExternalUrl,
+        val href: String,
+        val id: String,
+        val images: List<SpotifyCurrentTrackImage>,
+        val name: String,
+        val releaseDate: String, // これちゃんと取得できるか
+        val releaseDatePrecision: String, // "day"
+        val totalTracks: Int,
+        val type: String,
+        val uri: String
 
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackArtist(
-    val externalUrls: SpotifyCurrentTrackExternalUrl,
-    val href: String,
-    val id: String,
-    val name: String,
-    val type: String,
-    val uri: String
+        val externalUrls: SpotifyCurrentTrackExternalUrl,
+        val href: String,
+        val id: String,
+        val name: String,
+        val type: String,
+        val uri: String
 )
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackExternalUrl(
-    val spotify: String
+        val spotify: String
 )
 
 
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
-@JsonIgnoreProperties(ignoreUnknown=true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 data class SpotifyCurrentTrackImage(
-    val width: Int,
-    val height: Int,
-    val url: String
+        val width: Int,
+        val height: Int,
+        val url: String
 )
 
